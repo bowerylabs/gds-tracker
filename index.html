@@ -102,6 +102,26 @@
     /* ── NOTES ───────────────────────────────────────────────────────── */
     .note-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #78350f; margin-bottom: 24px; }
 
+    /* ── SCALE EXPLAINER ─────────────────────────────────────────────── */
+    .scale-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; }
+    .scale-box h4 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 14px; }
+    .scale-bar { position: relative; height: 12px; border-radius: 6px; background: linear-gradient(to right, #ef4444, #f97316, #eab308, #84cc16, #22c55e); margin-bottom: 8px; }
+    .scale-ticks { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 12px; }
+    .scale-bands { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .scale-band { border-radius: 8px; padding: 10px 12px; }
+    .scale-band .range { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
+    .scale-band .label { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+    .scale-band .desc  { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+    /* ── FILTERS ─────────────────────────────────────────────────────── */
+    .filter-row { display: flex; gap: 12px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .filter-row label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+    .filter-row select { border: 1px solid var(--border); border-radius: 8px; padding: 7px 32px 7px 12px; font-size: 13px; font-weight: 500; color: var(--text); background: var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6478' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center; appearance: none; cursor: pointer; }
+    .filter-row select:focus { outline: none; border-color: var(--steel); }
+    .filter-reset { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 13px; color: var(--muted); cursor: pointer; margin-left: auto; }
+    .filter-reset:hover { border-color: var(--steel); color: var(--steel); }
+    .filter-count { font-size: 12px; color: var(--muted); margin-left: 4px; }
+
     /* ── RESPONSIVE ─────────────────────────────────────────────────── */
     @media (max-width: 768px) {
       .kpi-row   { grid-template-columns: 1fr 1fr; }
@@ -132,6 +152,34 @@
   <div class="hero">
     <h2>AI Lab Governance &amp; Deployment Score</h2>
     <p>A backward-looking, quarterly composite metric tracking how rigorously OpenAI, Anthropic, Google DeepMind, and Meta AI govern model deployment. Scored across prohibited use scope, transparency artifact quality, and actual enforcement action.</p>
+  </div>
+
+  <div class="scale-box">
+    <h4>How to read the GDS score</h4>
+    <div class="scale-bar"></div>
+    <div class="scale-ticks"><span>0.0</span><span>0.25</span><span>0.50</span><span>0.75</span><span>1.0</span></div>
+    <div class="scale-bands">
+      <div class="scale-band" style="background:#fef2f2">
+        <div class="range" style="color:#dc2626">0.0 – 0.3</div>
+        <div class="label" style="color:#dc2626">Minimal</div>
+        <div class="desc">Little to no public governance infrastructure. Policies are vague, documentation is absent, and enforcement is unpublished.</div>
+      </div>
+      <div class="scale-band" style="background:#fff7ed">
+        <div class="range" style="color:#ea580c">0.3 – 0.6</div>
+        <div class="label" style="color:#ea580c">Developing</div>
+        <div class="desc">Some prohibited use categories named and safety documentation published, but enforcement transparency remains limited.</div>
+      </div>
+      <div class="scale-band" style="background:#f0fdf4">
+        <div class="range" style="color:#16a34a">0.6 – 0.8</div>
+        <div class="label" style="color:#16a34a">Established</div>
+        <div class="desc">Comprehensive policies, structured system cards with red-team disclosure, and at least basic enforcement reporting in place.</div>
+      </div>
+      <div class="scale-band" style="background:#dcfce7">
+        <div class="range" style="color:#15803d">0.8 – 1.0</div>
+        <div class="label" style="color:#15803d">Leading</div>
+        <div class="desc">Explicit, granular prohibited use scope; rigorous safety documentation; and quantified, categorised enforcement disclosures published regularly.</div>
+      </div>
+    </div>
   </div>
 
   <div class="note-box">
@@ -223,6 +271,23 @@
 
   <div class="note-box">
     🔎 <strong>Key events:</strong> Google DeepMind released Gemini 2.5 Pro in Q1 2025 without a system card (UK lawmakers cited breach of safety commitments) — reflected in Q2 2025 TAI dip. OpenAI began publishing structured "Disrupting Malicious Uses" reports from Q4 2024, driving ES gains. Anthropic added malicious cyber operations to its Usage Policy in Q2 2025. Meta's Q4 2024 ES uptick reflects the publicised military-use enforcement action.
+  </div>
+
+  <div class="filter-row">
+    <label>Quarter</label>
+    <select id="filterQuarter" onchange="applyFilters()">
+      <option value="">All quarters</option>
+    </select>
+    <label style="margin-left:8px">Lab</label>
+    <select id="filterLab" onchange="applyFilters()">
+      <option value="">All labs</option>
+      <option value="OpenAI">OpenAI</option>
+      <option value="Anthropic">Anthropic</option>
+      <option value="Google DeepMind">Google DeepMind</option>
+      <option value="Meta AI">Meta AI</option>
+    </select>
+    <button class="filter-reset" onclick="resetFilters()">✕ Clear filters</button>
+    <span class="filter-count" id="filterCount"></span>
   </div>
 
   <div class="table-wrap">
@@ -487,6 +552,43 @@ QUARTERS.forEach((q, qi) => {
     tbody.appendChild(tr);
   });
 });
+
+// ══════════════════════════════════════════════════════
+//  POPULATE QUARTER FILTER
+// ══════════════════════════════════════════════════════
+const qSelect = document.getElementById('filterQuarter');
+QUARTERS.forEach(q => {
+  const opt = document.createElement('option');
+  opt.value = q; opt.textContent = q;
+  qSelect.appendChild(opt);
+});
+
+// ══════════════════════════════════════════════════════
+//  FILTER LOGIC
+// ══════════════════════════════════════════════════════
+function applyFilters() {
+  const qVal   = document.getElementById('filterQuarter').value;
+  const labVal = document.getElementById('filterLab').value;
+  const rows   = document.querySelectorAll('#scoreTbody tr');
+  let visible  = 0;
+  rows.forEach(row => {
+    const cells   = row.querySelectorAll('td');
+    const quarter = cells[0].textContent.trim();
+    const lab     = cells[1].textContent.trim();
+    const show    = (!qVal || quarter === qVal) && (!labVal || lab === labVal);
+    row.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  const total = rows.length;
+  const countEl = document.getElementById('filterCount');
+  countEl.textContent = (qVal || labVal) ? `Showing ${visible} of ${total} rows` : '';
+}
+
+function resetFilters() {
+  document.getElementById('filterQuarter').value = '';
+  document.getElementById('filterLab').value = '';
+  applyFilters();
+}
 
 // ══════════════════════════════════════════════════════
 //  TAB NAVIGATION
