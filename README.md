@@ -2,6 +2,8 @@
 
 A backward-looking, quarterly composite metric tracking governance quality across the four leading AI laboratories: **OpenAI, Anthropic, Google DeepMind, and Meta AI**.
 
+Live site: https://bowerylabs.github.io/gds-tracker/ 
+
 ## Formula
 
 ```
