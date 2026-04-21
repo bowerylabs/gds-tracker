@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GDS — AI Lab Governance & Deployment Score</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --navy:   #1a375c;
+      --steel:  #2e75b6;
+      --light:  #d5e8f0;
+      --bg:     #f4f7fb;
+      --card:   #ffffff;
+      --border: #dde4ee;
+      --text:   #1a1f2e;
+      --muted:  #5a6478;
+      --openai: #10a37f;
+      --anthropic: #cc785c;
+      --google: #4285f4;
+      --meta:   #7c3aed;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+
+    /* ── NAV ─────────────────────────────────────────────────────────── */
+    header { background: var(--navy); color: #fff; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+    header h1 { font-size: 17px; font-weight: 700; letter-spacing: .3px; }
+    header span { font-size: 12px; opacity: .65; margin-left: 10px; font-weight: 400; }
+    nav { display: flex; gap: 4px; }
+    nav button { background: none; border: none; color: rgba(255,255,255,.7); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: all .15s; }
+    nav button:hover { background: rgba(255,255,255,.12); color: #fff; }
+    nav button.active { background: rgba(255,255,255,.18); color: #fff; }
+
+    /* ── MAIN ────────────────────────────────────────────────────────── */
+    main { max-width: 1180px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* ── HERO ─────────────────────────────────────────────────────────── */
+    .hero { margin-bottom: 32px; }
+    .hero h2 { font-size: 26px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .hero p  { color: var(--muted); max-width: 700px; }
+
+    /* ── CARDS ────────────────────────────────────────────────────────── */
+    .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 32px; }
+    .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+    .kpi .lab { font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; margin-bottom: 6px; }
+    .kpi .score { font-size: 36px; font-weight: 800; line-height: 1; }
+    .kpi .delta { font-size: 12px; margin-top: 4px; color: var(--muted); }
+    .kpi.openai    { border-top: 4px solid var(--openai); }
+    .kpi.anthropic { border-top: 4px solid var(--anthropic); }
+    .kpi.google    { border-top: 4px solid var(--google); }
+    .kpi.meta      { border-top: 4px solid var(--meta); }
+    .kpi.openai    .lab { color: var(--openai); }
+    .kpi.anthropic .lab { color: var(--anthropic); }
+    .kpi.google    .lab { color: var(--google); }
+    .kpi.meta      .lab { color: var(--meta); }
+
+    /* ── CHART PANELS ────────────────────────────────────────────────── */
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+    .panel h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .panel .sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+    .chart-wrap { position: relative; height: 280px; }
+
+    /* ── SUB-SCORE GRID ──────────────────────────────────────────────── */
+    .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    /* ── TABLE ────────────────────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead th { background: var(--navy); color: #fff; padding: 11px 14px; text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .4px; }
+    tbody tr:nth-child(even) { background: #f7f9fc; }
+    tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    tbody td.lab-name { font-weight: 700; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+
+    /* ── METHODOLOGY ────────────────────────────────────────────────── */
+    .method-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-bottom: 28px; }
+    .method-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; }
+    .method-card .weight { font-size: 28px; font-weight: 800; color: var(--steel); margin-bottom: 4px; }
+    .method-card h4 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .method-card p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .formula-box { background: var(--navy); color: #fff; border-radius: 12px; padding: 22px 28px; text-align: center; margin-bottom: 28px; }
+    .formula-box .f { font-size: 18px; font-weight: 700; letter-spacing: .5px; }
+    .formula-box .note { font-size: 12px; opacity: .65; margin-top: 8px; }
+    .method-detail { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+    .method-detail summary { padding: 16px 20px; font-weight: 700; color: var(--navy); cursor: pointer; font-size: 14px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    .method-detail summary::after { content: '▾'; font-size: 16px; color: var(--steel); }
+    .method-detail[open] summary::after { content: '▴'; }
+    .method-detail .inner { padding: 0 20px 20px; font-size: 13.5px; color: var(--muted); }
+    .method-detail .inner ul { padding-left: 18px; margin-top: 8px; }
+    .method-detail .inner li { margin-bottom: 5px; }
+
+    /* ── LEGEND ──────────────────────────────────────────────────────── */
+    .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+    /* ── TABS ────────────────────────────────────────────────────────── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── NOTES ───────────────────────────────────────────────────────── */
+    .note-box { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 14px 18px; font-size: 13px; color: #78350f; margin-bottom: 24px; }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .kpi-row   { grid-template-columns: 1fr 1fr; }
+      .sub-grid  { grid-template-columns: 1fr; }
+      .method-grid { grid-template-columns: 1fr; }
+      nav button span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div><h1>GDS <span>Governance &amp; Deployment Score — AI Labs</span></h1></div>
+  <nav>
+    <button class="active" onclick="showTab('dashboard')">Dashboard</button>
+    <button onclick="showTab('subscores')">Sub-Scores</button>
+    <button onclick="showTab('scorecard')">Scorecard</button>
+    <button onclick="showTab('methodology')">Methodology</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════
+     DASHBOARD TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-dashboard" class="tab-content active">
+  <div class="hero">
+    <h2>AI Lab Governance &amp; Deployment Score</h2>
+    <p>A backward-looking, quarterly composite metric tracking how rigorously OpenAI, Anthropic, Google DeepMind, and Meta AI govern model deployment. Scored across prohibited use scope, transparency artifact quality, and actual enforcement action.</p>
+  </div>
+
+  <div class="note-box">
+    ⚠️ <strong>Data note:</strong> Scores are based on publicly available policy documents, system cards, and enforcement publications. Enforcement Signal (ES) data is currently sparse for most labs — this is by design; the metric will become more discriminating as disclosure norms improve. See Methodology for full scoring rationale.
+  </div>
+
+  <!-- KPI CARDS — latest quarter (Q1 2026) -->
+  <div class="kpi-row">
+    <div class="kpi openai">
+      <div class="lab">OpenAI</div>
+      <div class="score" style="color:var(--openai)">0.96</div>
+      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.14 vs Q2 2024</div>
+    </div>
+    <div class="kpi anthropic">
+      <div class="lab">Anthropic</div>
+      <div class="score" style="color:var(--anthropic)">0.82</div>
+      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.26 vs Q2 2024</div>
+    </div>
+    <div class="kpi google">
+      <div class="lab">Google DeepMind</div>
+      <div class="score" style="color:var(--google)">0.64</div>
+      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.14 vs Q2 2024</div>
+    </div>
+    <div class="kpi meta">
+      <div class="lab">Meta AI</div>
+      <div class="score" style="color:var(--meta)">0.46</div>
+      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.14 vs Q2 2024</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--openai)"></div>OpenAI</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--anthropic)"></div>Anthropic</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--google)"></div>Google DeepMind</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--meta)"></div>Meta AI</div>
+  </div>
+
+  <div class="panel">
+    <h3>Composite GDS Over Time</h3>
+    <div class="sub">Weighted composite: PUCC × 0.30 + TAI × 0.30 + ES × 0.40 &nbsp;|&nbsp; Scale 0–1</div>
+    <div class="chart-wrap"><canvas id="chartGDS"></canvas></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SUB-SCORES TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-subscores" class="tab-content">
+  <div class="hero">
+    <h2>Sub-Score Trends</h2>
+    <p>Each metric normalized to 0–1. PUCC = prohibited use category count / 15. TAI = transparency artifact checklist / 5. ES = enforcement signal composite / 4.</p>
+  </div>
+
+  <div class="legend" style="margin-bottom:24px">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--openai)"></div>OpenAI</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--anthropic)"></div>Anthropic</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--google)"></div>Google DeepMind</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--meta)"></div>Meta AI</div>
+  </div>
+
+  <div class="sub-grid">
+    <div class="panel">
+      <h3>PUCC — Prohibited Use Category Count</h3>
+      <div class="sub">Normalized: raw count / 15 theoretical max</div>
+      <div class="chart-wrap"><canvas id="chartPUCC"></canvas></div>
+    </div>
+    <div class="panel">
+      <h3>TAI — Transparency Artifact Index</h3>
+      <div class="sub">Normalized: checklist score / 5</div>
+      <div class="chart-wrap"><canvas id="chartTAI"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>ES — Enforcement Signal</h3>
+    <div class="sub">Normalized: composite score / 4 &nbsp;·&nbsp; Components: disclosure (1pt) + volume (1pt) + recency (1pt) + granularity bonus (1pt)</div>
+    <div class="chart-wrap" style="height:300px"><canvas id="chartES"></canvas></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCORECARD TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-scorecard" class="tab-content">
+  <div class="hero">
+    <h2>Full Scorecard</h2>
+    <p>All quarters, all sub-scores, and composite GDS. PUCC and TAI scored from public policy and system card documents. ES scored from published enforcement and transparency reports.</p>
+  </div>
+
+  <div class="note-box">
+    🔎 <strong>Key events:</strong> Google DeepMind released Gemini 2.5 Pro in Q1 2025 without a system card (UK lawmakers cited breach of safety commitments) — reflected in Q2 2025 TAI dip. OpenAI began publishing structured "Disrupting Malicious Uses" reports from Q4 2024, driving ES gains. Anthropic added malicious cyber operations to its Usage Policy in Q2 2025. Meta's Q4 2024 ES uptick reflects the publicised military-use enforcement action.
+  </div>
+
+  <div class="table-wrap">
+    <table id="scoreTable">
+      <thead>
+        <tr>
+          <th>Quarter</th>
+          <th>Lab</th>
+          <th>PUCC raw</th>
+          <th>PUCC norm</th>
+          <th>TAI raw</th>
+          <th>TAI norm</th>
+          <th>ES raw</th>
+          <th>ES norm</th>
+          <th>GDS</th>
+        </tr>
+      </thead>
+      <tbody id="scoreTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     METHODOLOGY TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-methodology" class="tab-content">
+  <div class="hero">
+    <h2>Methodology</h2>
+    <p>A backward-looking, quarterly composite across three observable governance dimensions. All data sourced from public records. Judgment calls are logged below.</p>
+  </div>
+
+  <div class="formula-box">
+    <div class="f">GDS = (PUCC<sub>norm</sub> × 0.30) + (TAI<sub>norm</sub> × 0.30) + (ES<sub>norm</sub> × 0.40)</div>
+    <div class="note">ES carries highest weight: it is the only metric that measures governance in practice, not governance on paper — and the hardest to game.</div>
+  </div>
+
+  <div class="method-grid">
+    <div class="method-card">
+      <div class="weight">30%</div>
+      <h4>PUCC — Prohibited Use Category Count</h4>
+      <p>Count of distinct high-risk use categories explicitly named in each lab's usage / acceptable use policy. Normalized against a theoretical max of 15. Tracks additions and deletions each quarter.</p>
+    </div>
+    <div class="method-card">
+      <div class="weight">30%</div>
+      <h4>TAI — Transparency Artifact Index</h4>
+      <p>Binary 0–5 checklist per lab per quarter: system card exists, risk classification table present, red-team methodology disclosed, limitations documented, updated within 12 months. Scored on the most recently released production model.</p>
+    </div>
+    <div class="method-card">
+      <div class="weight">40%</div>
+      <h4>ES — Enforcement Signal</h4>
+      <p>0–4 composite: disclosure of any enforcement data (1pt), quantified volume or rate (1pt), published within 12 months (1pt), breakdown by violation category (1pt). Most important sub-score — highest weight precisely because it cannot be improved by communications alone.</p>
+    </div>
+  </div>
+
+  <details class="method-detail">
+    <summary>PUCC — Keyword Taxonomy</summary>
+    <div class="inner">
+      <p>The following categories form the master taxonomy. Scoring counts at the most granular level named in each policy document.</p>
+      <ul>
+        <li>Bioweapons / biological weapons</li>
+        <li>Chemical weapons</li>
+        <li>Radiological or nuclear weapons</li>
+        <li>CSAM / child sexual abuse material</li>
+        <li>Election interference / influence operations</li>
+        <li>Autonomous lethal weapons / autonomous weapons systems</li>
+        <li>Mass surveillance</li>
+        <li>Cyberweapons / malware / offensive cyber</li>
+        <li>Human trafficking</li>
+        <li>Self-harm facilitation</li>
+        <li>Disinformation / synthetic media for deception</li>
+        <li>Critical infrastructure attacks</li>
+        <li>Non-consensual intimate imagery (NCII)</li>
+        <li>Personalised professional advice without oversight (legal, medical, financial)</li>
+        <li>Censorship / government surveillance tools</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="method-detail">
+    <summary>TAI — Checklist Elements</summary>
+    <div class="inner">
+      <ul>
+        <li><strong>(1pt)</strong> A public system card or model card exists for the most recently released production model.</li>
+        <li><strong>(1pt)</strong> The card includes an explicit risk or harm classification table or taxonomy.</li>
+        <li><strong>(1pt)</strong> Red-team or adversarial testing methodology is disclosed — not just "we red-teamed" but some description of scope.</li>
+        <li><strong>(1pt)</strong> Known limitations or failure modes are explicitly listed.</li>
+        <li><strong>(1pt)</strong> The card has been published or updated within 12 months of the scoring date.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="method-detail">
+    <summary>ES — Scoring Components</summary>
+    <div class="inner">
+      <ul>
+        <li><strong>Disclosure (1pt):</strong> The lab publishes any enforcement data — transparency reports, usage policy enforcement statistics, or account action summaries.</li>
+        <li><strong>Volume/rate (1pt):</strong> Published data includes a quantified count or rate of enforcement actions, not just qualitative statements.</li>
+        <li><strong>Recency (1pt):</strong> Enforcement data has been published within the last 12 months of the scoring date.</li>
+        <li><strong>Granularity bonus (1pt):</strong> Data breaks enforcement down by violation category (e.g., X% weapons-related, Y% CSAM) rather than aggregate totals only.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="method-detail">
+    <summary>Data Sources &amp; Judgment Calls</summary>
+    <div class="inner">
+      <ul>
+        <li><strong>OpenAI PUCC:</strong> openai.com/policies/usage-policies — scored at most granular named level, including October 2025 update adding personalized professional advice and NCII categories.</li>
+        <li><strong>Anthropic PUCC:</strong> anthropic.com/legal/aup — policy restructured June 2024 (AUP → Usage Policy); malicious cyber operations added March 2025; further update September 2025.</li>
+        <li><strong>Google DeepMind PUCC:</strong> ai.google/responsibility/principles + Gemini Prohibited Use Policy — broad categories, scored conservatively at named level.</li>
+        <li><strong>Meta AI PUCC:</strong> llama.meta.com AUP (Llama 3 / Llama 4) — broader categories, lower granularity than API-first labs.</li>
+        <li><strong>OpenAI TAI:</strong> GPT-4o system card (Aug 2024), o1 system card (Sep &amp; Dec 2024), o3/o4-mini system card (Apr 2025). All include explicit red-team methodology and risk taxonomies.</li>
+        <li><strong>Anthropic TAI:</strong> Claude 3 model card (Mar 2024), Claude 3.5 Sonnet addendum (Oct 2024), Claude 3.7 Sonnet system card (Feb 2025), Claude Opus 4 / Sonnet 4 system card (May 2025).</li>
+        <li><strong>Google DeepMind TAI:</strong> Q2 2025 scored 2/5 — Gemini 2.5 Pro released March 2025 without a system card, prompting formal complaint from 60 UK MPs citing breach of Frontier AI Safety Commitments. Card eventually published August 2025 (Gemini 2.5 Deep Think).</li>
+        <li><strong>Meta AI TAI:</strong> Model cards published on HuggingFace for each Llama release (3, 3.1, 3.2, 3.3, 4). Scored 3/5 consistently — cards exist and are updated, but lack explicit risk classification tables and detailed red-team methodology.</li>
+        <li><strong>OpenAI ES:</strong> "Disrupting Malicious Uses" reports published February 2024, October 2024, February 2025, June 2025, October 2025. Reports quantify disrupted operations and banned accounts. Granularity bonus awarded from Q4 2024 onward (category-level breakdown in reports).</li>
+        <li><strong>Anthropic ES:</strong> Government requests transparency report (H1 2024), EU DSA transparency report (February 2026). Volume score awarded from Q1 2025 as reports began including enforcement statistics via the Transparency Hub.</li>
+        <li><strong>Google DeepMind ES:</strong> Limited public enforcement data. DSA compliance noted. ES score of 2/4 from Q4 2025 reflects emerging transparency reporting.</li>
+        <li><strong>Meta AI ES:</strong> Military-use enforcement action publicised Q4 2024 (subsequently reversed — use granted to US government/contractors November 2024). Disclosure score of 1/4 reflects report mechanism (LlamaUseReport@meta.com) but no quantified public data.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="method-detail">
+    <summary>Forward Weight Schedule</summary>
+    <div class="inner">
+      <p>As enforcement disclosure norms improve under regulatory pressure, ES weight is expected to increase.</p>
+      <ul>
+        <li><strong>v1.0 (2026):</strong> PUCC 0.30 · TAI 0.30 · ES 0.40</li>
+        <li><strong>v2.0 (2027):</strong> PUCC 0.25 · TAI 0.25 · ES 0.50</li>
+        <li><strong>v3.0 (2028+):</strong> PUCC 0.20 · TAI 0.20 · ES 0.60</li>
+      </ul>
+    </div>
+  </details>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════
+const QUARTERS = ['Q2 2024','Q3 2024','Q4 2024','Q1 2025','Q2 2025','Q3 2025','Q4 2025','Q1 2026'];
+
+const DATA = {
+  openai: {
+    pucc: [11,11,12,12,12,13,13,13],
+    tai:  [ 5, 5, 5, 5, 5, 5, 5, 5],
+    es:   [ 3, 3, 4, 4, 4, 4, 4, 4],
+  },
+  anthropic: {
+    pucc: [ 8, 8, 9, 9,10,10,11,11],
+    tai:  [ 5, 5, 5, 5, 5, 5, 5, 5],
+    es:   [ 1, 1, 1, 2, 2, 2, 2, 3],
+  },
+  google: {
+    pucc: [ 8, 8, 9, 9, 9,10,10,10],
+    tai:  [ 4, 4, 4, 4, 2, 4, 4, 4],
+    es:   [ 1, 1, 1, 1, 1, 1, 2, 2],
+  },
+  meta: {
+    pucc: [ 7, 8, 8, 8, 8, 8, 9, 9],
+    tai:  [ 3, 3, 3, 3, 3, 3, 3, 3],
+    es:   [ 0, 0, 1, 1, 1, 1, 1, 1],
+  },
+};
+
+const PUCC_MAX = 15, TAI_MAX = 5, ES_MAX = 4;
+const W = { pucc: 0.30, tai: 0.30, es: 0.40 };
+
+function norm(v, max) { return Math.round((v / max) * 1000) / 1000; }
+function gds(lab, qi) {
+  const d = DATA[lab];
+  return Math.round((norm(d.pucc[qi], PUCC_MAX)*W.pucc + norm(d.tai[qi], TAI_MAX)*W.tai + norm(d.es[qi], ES_MAX)*W.es) * 1000) / 1000;
+}
+
+const LABS = [
+  { key:'openai',    label:'OpenAI',          color:'#10a37f' },
+  { key:'anthropic', label:'Anthropic',        color:'#cc785c' },
+  { key:'google',    label:'Google DeepMind',  color:'#4285f4' },
+  { key:'meta',      label:'Meta AI',          color:'#7c3aed' },
+];
+
+// ── Compute GDS series ──────────────────────────────────
+LABS.forEach(l => {
+  l.gds  = QUARTERS.map((_,i) => gds(l.key, i));
+  l.puccN = QUARTERS.map((_,i) => norm(DATA[l.key].pucc[i], PUCC_MAX));
+  l.taiN  = QUARTERS.map((_,i) => norm(DATA[l.key].tai[i], TAI_MAX));
+  l.esN   = QUARTERS.map((_,i) => norm(DATA[l.key].es[i], ES_MAX));
+});
+
+// ══════════════════════════════════════════════════════
+//  CHART HELPERS
+// ══════════════════════════════════════════════════════
+const CHART_DEFAULTS = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false }, tooltip: { mode:'index', intersect:false } },
+  scales: {
+    x: { grid:{ color:'#edf0f5' }, ticks:{ font:{size:11} } },
+    y: { min:0, max:1, grid:{ color:'#edf0f5' }, ticks:{ font:{size:11}, callback: v => v.toFixed(2) } },
+  },
+  elements: { point:{ radius:4, hoverRadius:6 }, line:{ borderWidth:2.5, tension:0.3 } },
+};
+
+function makeDataset(lab, series) {
+  return {
+    label: lab.label,
+    data: lab[series],
+    borderColor: lab.color,
+    backgroundColor: lab.color + '18',
+    fill: false,
+  };
+}
+
+function buildChart(id, series) {
+  new Chart(document.getElementById(id), {
+    type: 'line',
+    data: { labels: QUARTERS, datasets: LABS.map(l => makeDataset(l, series)) },
+    options: CHART_DEFAULTS,
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  BUILD CHARTS
+// ══════════════════════════════════════════════════════
+buildChart('chartGDS',  'gds');
+buildChart('chartPUCC', 'puccN');
+buildChart('chartTAI',  'taiN');
+buildChart('chartES',   'esN');
+
+// ══════════════════════════════════════════════════════
+//  BUILD SCORECARD TABLE
+// ══════════════════════════════════════════════════════
+function scoreColor(v) {
+  if (v >= 0.8) return '#dcfce7;color:#166534';
+  if (v >= 0.6) return '#fef9c3;color:#854d0e';
+  if (v >= 0.4) return '#fee2e2;color:#991b1b';
+  return '#f3f4f6;color:#374151';
+}
+
+const tbody = document.getElementById('scoreTbody');
+QUARTERS.forEach((q, qi) => {
+  LABS.forEach(lab => {
+    const d = DATA[lab.key];
+    const pn = norm(d.pucc[qi], PUCC_MAX);
+    const tn = norm(d.tai[qi],  TAI_MAX);
+    const en = norm(d.es[qi],   ES_MAX);
+    const g  = gds(lab.key, qi);
+    const sc = scoreColor(g);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${q}</td>
+      <td class="lab-name" style="color:${lab.color}">${lab.label}</td>
+      <td>${d.pucc[qi]}</td>
+      <td>${pn.toFixed(2)}</td>
+      <td>${d.tai[qi]}</td>
+      <td>${tn.toFixed(2)}</td>
+      <td>${d.es[qi]}</td>
+      <td>${en.toFixed(2)}</td>
+      <td><span class="badge" style="background:${sc.split(';')[0].replace('background:','')};${sc.split(';')[1]}">${g.toFixed(2)}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+});
+
+// ══════════════════════════════════════════════════════
+//  TAB NAVIGATION
+// ══════════════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>
