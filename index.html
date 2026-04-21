@@ -122,6 +122,37 @@
     .filter-reset:hover { border-color: var(--steel); color: var(--steel); }
     .filter-count { font-size: 12px; color: var(--muted); margin-left: 4px; }
 
+    /* ── SOURCES SECTION ─────────────────────────────────────────────── */
+    .sources-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .sources-header h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .sources-header p  { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+    .sources-controls input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; font-size: 13px; color: var(--text); margin-bottom: 12px; }
+    .sources-controls input:focus { outline: none; border-color: var(--steel); }
+    .src-pills-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+    .pill-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+    .src-pill { border: 1px solid var(--border); background: var(--bg); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .15s; }
+    .src-pill.active { background: var(--pc, var(--steel)); border-color: var(--pc, var(--steel)); color: #fff; }
+    .src-pill:hover:not(.active) { border-color: var(--steel); color: var(--steel); }
+    .src-lab-block { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
+    .src-lab-title { display: flex; align-items: center; gap: 10px; padding: 14px 18px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 700; }
+    .src-lab-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .src-metric-block { padding: 16px 18px; border-bottom: 1px solid var(--border); }
+    .src-metric-block:last-child { border-bottom: none; }
+    .src-metric-title { font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--steel); margin-bottom: 10px; }
+    .src-note { font-size: 13px; color: var(--muted); margin-bottom: 8px; line-height: 1.5; }
+    .src-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--steel); text-decoration: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 3px 9px; margin: 2px 4px 2px 0; }
+    .src-link:hover { background: #dbeafe; }
+    .src-link::before { content: '↗'; font-size: 10px; }
+    .src-quarter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 8px; }
+    .src-q-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+    .src-q-label { font-size: 11px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .src-q-badge { font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 8px; }
+    .src-component { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; margin-bottom: 6px; line-height: 1.4; }
+    .src-check { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+    .src-check.yes { background: #dcfce7; color: #15803d; }
+    .src-check.no  { background: #fee2e2; color: #dc2626; }
+    .src-no-results { text-align: center; padding: 32px; color: var(--muted); font-size: 13px; }
+
     /* ── RESPONSIVE ─────────────────────────────────────────────────── */
     @media (max-width: 768px) {
       .kpi-row   { grid-template-columns: 1fr 1fr; }
@@ -391,25 +422,30 @@
     </div>
   </details>
 
-  <details class="method-detail">
-    <summary>Data Sources &amp; Judgment Calls</summary>
-    <div class="inner">
-      <ul>
-        <li><strong>OpenAI PUCC:</strong> openai.com/policies/usage-policies — scored at most granular named level, including October 2025 update adding personalized professional advice and NCII categories.</li>
-        <li><strong>Anthropic PUCC:</strong> anthropic.com/legal/aup — policy restructured June 2024 (AUP → Usage Policy); malicious cyber operations added March 2025; further update September 2025.</li>
-        <li><strong>Google DeepMind PUCC:</strong> ai.google/responsibility/principles + Gemini Prohibited Use Policy — broad categories, scored conservatively at named level.</li>
-        <li><strong>Meta AI PUCC:</strong> llama.meta.com AUP (Llama 3 / Llama 4) — broader categories, lower granularity than API-first labs.</li>
-        <li><strong>OpenAI TAI:</strong> GPT-4o system card (Aug 2024), o1 system card (Sep &amp; Dec 2024), o3/o4-mini system card (Apr 2025). All include explicit red-team methodology and risk taxonomies.</li>
-        <li><strong>Anthropic TAI:</strong> Claude 3 model card (Mar 2024), Claude 3.5 Sonnet addendum (Oct 2024), Claude 3.7 Sonnet system card (Feb 2025), Claude Opus 4 / Sonnet 4 system card (May 2025).</li>
-        <li><strong>Google DeepMind TAI:</strong> Q2 2025 scored 2/5 — Gemini 2.5 Pro released March 2025 without a system card, prompting formal complaint from 60 UK MPs citing breach of Frontier AI Safety Commitments. Card eventually published August 2025 (Gemini 2.5 Deep Think).</li>
-        <li><strong>Meta AI TAI:</strong> Model cards published on HuggingFace for each Llama release (3, 3.1, 3.2, 3.3, 4). Scored 3/5 consistently — cards exist and are updated, but lack explicit risk classification tables and detailed red-team methodology.</li>
-        <li><strong>OpenAI ES:</strong> "Disrupting Malicious Uses" reports published February 2024, October 2024, February 2025, June 2025, October 2025. Reports quantify disrupted operations and banned accounts. Granularity bonus awarded from Q4 2024 onward (category-level breakdown in reports).</li>
-        <li><strong>Anthropic ES:</strong> Government requests transparency report (H1 2024), EU DSA transparency report (February 2026). Volume score awarded from Q1 2025 as reports began including enforcement statistics via the Transparency Hub.</li>
-        <li><strong>Google DeepMind ES:</strong> Limited public enforcement data. DSA compliance noted. ES score of 2/4 from Q4 2025 reflects emerging transparency reporting.</li>
-        <li><strong>Meta AI ES:</strong> Military-use enforcement action publicised Q4 2024 (subsequently reversed — use granted to US government/contractors November 2024). Disclosure score of 1/4 reflects report mechanism (LlamaUseReport@meta.com) but no quantified public data.</li>
-      </ul>
+  <!-- SOURCES SECTION -->
+  <div class="sources-section">
+    <div class="sources-header">
+      <h3>Data Sources &amp; Judgment Calls</h3>
+      <p>All scoring decisions documented with primary sources. Click any source link to verify. Use search or filters to drill into a specific lab, metric, or quarter.</p>
     </div>
-  </details>
+    <div class="sources-controls">
+      <input type="text" id="srcSearch" placeholder="🔍  Search labs, metrics, quarters, notes…" oninput="renderSources()">
+      <div class="src-pills-row">
+        <span class="pill-label">Lab:</span>
+        <button class="src-pill active" data-lab="" onclick="setSrcFilter('lab',this)">All</button>
+        <button class="src-pill" data-lab="openai"    onclick="setSrcFilter('lab',this)" style="--pc:#10a37f">OpenAI</button>
+        <button class="src-pill" data-lab="anthropic" onclick="setSrcFilter('lab',this)" style="--pc:#cc785c">Anthropic</button>
+        <button class="src-pill" data-lab="google"    onclick="setSrcFilter('lab',this)" style="--pc:#4285f4">Google DeepMind</button>
+        <button class="src-pill" data-lab="meta"      onclick="setSrcFilter('lab',this)" style="--pc:#7c3aed">Meta AI</button>
+        <span class="pill-label" style="margin-left:12px">Metric:</span>
+        <button class="src-pill active" data-metric="" onclick="setSrcFilter('metric',this)">All</button>
+        <button class="src-pill" data-metric="pucc" onclick="setSrcFilter('metric',this)">PUCC</button>
+        <button class="src-pill" data-metric="tai"  onclick="setSrcFilter('metric',this)">TAI</button>
+        <button class="src-pill" data-metric="es"   onclick="setSrcFilter('metric',this)">ES</button>
+      </div>
+    </div>
+    <div id="sourcesOutput"></div>
+  </div>
 
   <details class="method-detail">
     <summary>Forward Weight Schedule</summary>
@@ -552,6 +588,429 @@ QUARTERS.forEach((q, qi) => {
     tbody.appendChild(tr);
   });
 });
+
+// ══════════════════════════════════════════════════════
+//  SOURCES DATABASE
+// ══════════════════════════════════════════════════════
+const SOURCES_DB = [
+  // ── OPENAI ────────────────────────────────────────
+  { lab:'openai', labName:'OpenAI', color:'#10a37f', metric:'pucc',
+    notes: [
+      'Scored at most granular named level across all quarters.',
+      'Policy updated October 2025: added personalised professional advice (legal, medical, financial) and NCII as explicit prohibited categories, raising raw count to 13.',
+    ],
+    sources: [
+      { title:'OpenAI Usage Policies', url:'https://openai.com/policies/usage-policies' },
+    ]
+  },
+  { lab:'openai', labName:'OpenAI', color:'#10a37f', metric:'tai',
+    notes: [
+      'TAI = 5/5 across all quarters. All cards include explicit risk taxonomies, multi-phase red-team methodology, and documented failure modes.',
+    ],
+    sources: [
+      { title:'GPT-4o System Card (Aug 2024)', url:'https://arxiv.org/pdf/2410.21276' },
+      { title:'o1 System Card (Sep 2024)',     url:'https://cdn.openai.com/o1-system-card.pdf' },
+      { title:'o1 System Card (Dec 2024)',     url:'https://cdn.openai.com/o1-system-card-20241205.pdf' },
+      { title:'o3 & o4-mini System Card (Apr 2025)', url:'https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf' },
+      { title:'OpenAI System Cards Index',    url:'https://openai.com/safety/' },
+    ]
+  },
+  { lab:'openai', labName:'OpenAI', color:'#10a37f', metric:'es',
+    notes: [
+      'Granularity bonus (4th point) awarded from Q4 2024 onward, when reports began breaking enforcement down by threat category.',
+      'Reporting programme has grown from a single Feb 2024 post to a structured quarterly series covering influence ops, cyber, scams, and state actors.',
+    ],
+    quarters: {
+      'Q2 2024': { score:3, components:[
+        {name:'Disclosure',   pts:1, note:'Feb 2024 state-actor report published.',             src:{title:'Disrupting Malicious Uses — State Actors (Feb 2024)', url:'https://openai.com/index/disrupting-malicious-uses-of-ai-by-state-affiliated-threat-actors/'}},
+        {name:'Volume/Rate',  pts:1, note:'Report quantifies disrupted networks and bans.',     src:null},
+        {name:'Recency',      pts:1, note:'Published within scoring period.',                   src:null},
+        {name:'Granularity',  pts:0, note:'No category-level breakdown in early reports.',      src:null},
+      ]},
+      'Q3 2024': { score:3, components:[
+        {name:'Disclosure',   pts:1, note:'Oct 2024 report published.',                         src:{title:'Influence & Cyber Operations Update (Oct 2024)', url:'https://cdn.openai.com/threat-intelligence-reports/influence-and-cyber-operations-an-update_October-2024.pdf'}},
+        {name:'Volume/Rate',  pts:1, note:'Disrupted operations quantified.',                   src:null},
+        {name:'Recency',      pts:1, note:'Published within scoring period.',                   src:null},
+        {name:'Granularity',  pts:0, note:'Breakdown not yet structured by category.',          src:null},
+      ]},
+      'Q4 2024': { score:4, components:[
+        {name:'Disclosure',   pts:1, note:'Oct 2024 report covers Q4 period.',                  src:{title:'Influence & Cyber Operations Update (Oct 2024)', url:'https://cdn.openai.com/threat-intelligence-reports/influence-and-cyber-operations-an-update_October-2024.pdf'}},
+        {name:'Volume/Rate',  pts:1, note:'Banned accounts and disrupted networks cited.',      src:null},
+        {name:'Recency',      pts:1, note:'Published within scoring period.',                   src:null},
+        {name:'Granularity',  pts:1, note:'Reports now categorise by threat type: influence ops, cyber, scams.', src:null},
+      ]},
+      'Q1 2025': { score:4, components:[
+        {name:'Disclosure',   pts:1, note:'Feb 2025 report published.',                         src:{title:'Disrupting Malicious Uses (Feb 2025)', url:'https://cdn.openai.com/threat-intelligence-reports/disrupting-malicious-uses-of-our-models-february-2025-update.pdf'}},
+        {name:'Volume/Rate',  pts:1, note:'Quantified operations and banned accounts.',         src:null},
+        {name:'Recency',      pts:1, note:'Published within scoring period.',                   src:null},
+        {name:'Granularity',  pts:1, note:'Category-level breakdown maintained.',               src:null},
+      ]},
+      'Q2 2025': { score:4, components:[
+        {name:'Disclosure',   pts:1, note:'Jun 2025 report published.',                         src:{title:'Disrupting Malicious Uses (Jun 2025)', url:'https://openai.com/global-affairs/disrupting-malicious-uses-of-ai-june-2025/'}},
+        {name:'Volume/Rate',  pts:1, note:'Disrupted networks and scam clusters quantified.',   src:null},
+        {name:'Recency',      pts:1, note:'Published within scoring period.',                   src:null},
+        {name:'Granularity',  pts:1, note:'Breakdown: influence ops, cyber espionage, scams.',  src:null},
+      ]},
+      'Q3 2025': { score:4, components:[
+        {name:'Disclosure',   pts:1, note:'Oct 2025 report published.',                         src:{title:'Disrupting Malicious Uses (Oct 2025)', url:'https://openai.com/global-affairs/disrupting-malicious-uses-of-ai-october-2025/'}},
+        {name:'Volume/Rate',  pts:1, note:'Quantified operations reported.',                    src:null},
+        {name:'Recency',      pts:1, note:'Published within scoring period.',                   src:null},
+        {name:'Granularity',  pts:1, note:'Category breakdown by threat type.',                 src:null},
+      ]},
+      'Q4 2025': { score:4, components:[
+        {name:'Disclosure',   pts:1, note:'Ongoing programme active; Trust & Transparency hub maintained.', src:{title:'OpenAI Trust & Transparency', url:'https://openai.com/trust-and-transparency/'}},
+        {name:'Volume/Rate',  pts:1, note:'Quantified in ongoing series.',                      src:null},
+        {name:'Recency',      pts:1, note:'Published within scoring period.',                   src:null},
+        {name:'Granularity',  pts:1, note:'Category-level breakdown maintained.',               src:null},
+      ]},
+      'Q1 2026': { score:4, components:[
+        {name:'Disclosure',   pts:1, note:'Feb 2026 scam-network report published; hub current.', src:{title:'OpenAI Transparency & Content Moderation', url:'https://openai.com/transparency-and-content-moderation/'}},
+        {name:'Volume/Rate',  pts:1, note:'Quantified accounts and disrupted operations.',      src:null},
+        {name:'Recency',      pts:1, note:'Published within scoring period.',                   src:null},
+        {name:'Granularity',  pts:1, note:'Breakdown by category: romance scams, influence ops, cyber espionage.', src:null},
+      ]},
+    }
+  },
+  // ── ANTHROPIC ─────────────────────────────────────
+  { lab:'anthropic', labName:'Anthropic', color:'#cc785c', metric:'pucc',
+    notes: [
+      'Policy restructured June 2024: Acceptable Use Policy renamed Usage Policy; "Prohibited Uses" and "Prohibited Business Cases" consolidated.',
+      'Malicious cyber operations added as explicit category March 2025.',
+      'Further update September 2025 added clarity on disinformation, censorship tools, and surveillance.',
+    ],
+    sources: [
+      { title:'Anthropic Usage Policy',          url:'https://www.anthropic.com/legal/aup' },
+      { title:'Usage Policy Update (Jun 2024)',   url:'https://www.anthropic.com/news/updating-our-usage-policy' },
+      { title:'Usage Policy Update (2025)',       url:'https://www.anthropic.com/news/usage-policy-update' },
+    ]
+  },
+  { lab:'anthropic', labName:'Anthropic', color:'#cc785c', metric:'tai',
+    notes: [
+      'TAI = 5/5 across all quarters. Cards include explicit safety evaluations, RSP-linked risk classifications, and red-team methodology disclosures.',
+      'Anthropic maintains a dedicated system cards page updated with each major model release.',
+    ],
+    sources: [
+      { title:'Claude 3 Model Card (Mar 2024)',              url:'https://assets.anthropic.com/m/61e7d27f8c8f5919/original/Claude-3-Model-Card.pdf' },
+      { title:'Claude 3.5 Sonnet Addendum (Oct 2024)',       url:'https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf' },
+      { title:'Claude 3.7 Sonnet System Card (Feb 2025)',    url:'https://www.anthropic.com/claude-3-7-sonnet-system-card' },
+      { title:'Claude Opus 4 & Sonnet 4 System Card (May 2025)', url:'https://www-cdn.anthropic.com/4263b940cabb546aa0e3283f35b686f4f3b2ff47.pdf' },
+      { title:'All Anthropic System Cards',                  url:'https://www.anthropic.com/system-cards' },
+    ]
+  },
+  { lab:'anthropic', labName:'Anthropic', color:'#cc785c', metric:'es',
+    notes: [
+      'Volume point awarded from Q1 2025 as transparency reports began including enforcement statistics.',
+      'EU DSA compliance reports provide the most structured enforcement data available for Anthropic.',
+      'Third point (recency) not awarded in Q2–Q4 2024 as no enforcement publication fell within those scoring windows.',
+    ],
+    quarters: {
+      'Q2 2024': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Government requests report (H1 2024) published.',    src:{title:'Government Requests Report H1 2024', url:'https://assets.anthropic.com/m/670b32af84ad8a00/original/Anthropic-Government-Requests-Report-Jan-June-2024.pdf'}},
+        {name:'Volume/Rate',  pts:0, note:'Report covers data requests only; no enforcement volume published.', src:null},
+        {name:'Recency',      pts:0, note:'Report covers H1 2024 but published after Q2 window.', src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown of enforcement actions.',      src:null},
+      ]},
+      'Q3 2024': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Transparency hub launched; government requests report available.', src:{title:'Anthropic Transparency Hub', url:'https://www.anthropic.com/transparency'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement volume published.',        src:null},
+        {name:'Recency',      pts:0, note:'No enforcement-specific report within window.',      src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q4 2024': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Transparency hub active with model safety reports.',  src:{title:'Anthropic Transparency Hub', url:'https://www.anthropic.com/transparency'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement volume published.',        src:null},
+        {name:'Recency',      pts:0, note:'No enforcement-specific publication within window.', src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q1 2025': { score:2, components:[
+        {name:'Disclosure',   pts:1, note:'Transparency hub and model report published.',       src:{title:'Anthropic Transparency Hub — Model Report', url:'https://www.anthropic.com/transparency/model-report'}},
+        {name:'Volume/Rate',  pts:1, note:'Model report includes enforcement statistics via classifier deployment data.', src:null},
+        {name:'Recency',      pts:0, note:'No standalone enforcement report within Q1 2025 window.', src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown of violations.',               src:null},
+      ]},
+      'Q2 2025': { score:2, components:[
+        {name:'Disclosure',   pts:1, note:'Transparency hub active; enforcement described in usage policy update.', src:{title:'Usage Policy Update (2025)', url:'https://www.anthropic.com/news/usage-policy-update'}},
+        {name:'Volume/Rate',  pts:1, note:'Classifier deployment described with enforcement methodology.', src:null},
+        {name:'Recency',      pts:0, note:'No standalone enforcement report within window.',    src:null},
+        {name:'Granularity',  pts:0, note:'No category-level breakdown published.',             src:null},
+      ]},
+      'Q3 2025': { score:2, components:[
+        {name:'Disclosure',   pts:1, note:'Transparency hub maintained.',                       src:{title:'Anthropic Transparency Hub', url:'https://www.anthropic.com/transparency'}},
+        {name:'Volume/Rate',  pts:1, note:'Enforcement methodology and classifier data described.', src:null},
+        {name:'Recency',      pts:0, note:'No standalone enforcement report within window.',    src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown published.',                   src:null},
+      ]},
+      'Q4 2025': { score:2, components:[
+        {name:'Disclosure',   pts:1, note:'DSA transparency report in preparation; hub active.', src:{title:'Anthropic Transparency Hub', url:'https://www.anthropic.com/transparency'}},
+        {name:'Volume/Rate',  pts:1, note:'Classifier-based enforcement described.',             src:null},
+        {name:'Recency',      pts:0, note:'DSA report published Feb 2026, outside this window.', src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q1 2026': { score:3, components:[
+        {name:'Disclosure',   pts:1, note:'EU DSA Transparency Report published Feb 2026.',     src:{title:'EU DSA Transparency Report (Feb 2026)', url:'https://www-cdn.anthropic.com/a5e41ab5c47afca9e39912a7cf94bd433d9b4533.pdf'}},
+        {name:'Volume/Rate',  pts:1, note:'DSA report includes enforcement action counts and complaint data.', src:null},
+        {name:'Recency',      pts:1, note:'Published within Q1 2026 scoring window.',           src:null},
+        {name:'Granularity',  pts:0, note:'Report covers DSA-scope actions only; no full violation category breakdown.', src:null},
+      ]},
+    }
+  },
+  // ── GOOGLE DEEPMIND ───────────────────────────────
+  { lab:'google', labName:'Google DeepMind', color:'#4285f4', metric:'pucc',
+    notes: [
+      'Scored against Gemini Prohibited Use Policy and Google AI Principles combined. Categories are broader than API-first labs; scored conservatively at explicitly named level.',
+      'Policy updated to add categories in Q3 2025.',
+    ],
+    sources: [
+      { title:'Gemini Prohibited Use Policy',      url:'https://support.google.com/gemini/answer/16625148' },
+      { title:'Google AI Principles',              url:'https://ai.google/responsibility/principles/' },
+      { title:'Gemini API Usage Policies',         url:'https://ai.google.dev/gemini-api/docs/usage-policies' },
+    ]
+  },
+  { lab:'google', labName:'Google DeepMind', color:'#4285f4', metric:'tai',
+    notes: [
+      'Q2 2025 scored 2/5 — Gemini 2.5 Pro was released March 2025 with no accompanying system card, prompting a formal letter from 60 UK MPs citing breach of Frontier AI Safety Commitments signed at Bletchley Park.',
+      'Card for Gemini 2.5 Deep Think published August 2025; score restored to 4/5 in Q3 2025.',
+      'Consistently scored 4/5 (not 5/5) due to risk classification tables being less explicit than OpenAI/Anthropic cards.',
+    ],
+    sources: [
+      { title:'Gemini Model Cards Index',                       url:'https://deepmind.google/models/model-cards/' },
+      { title:'Gemini 1.5 Pro Model Card',                      url:'https://www.prompthub.us/models/gemini-1-5-pro' },
+      { title:'Gemini 2.5 Deep Think Model Card (Aug 2025)',    url:'https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-2-5-Deep-Think-Model-Card.pdf' },
+      { title:'Gemini 3 Pro Model Card (Dec 2025)',             url:'https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-3-Pro-Model-Card.pdf' },
+      { title:'UK MPs letter re: Gemini 2.5 Pro safety report', url:'https://fortune.com/2025/08/29/british-lawmakers-accuse-google-deepmind-of-breach-of-trust-over-delayed-gemini-2-5-pro-safety-report/' },
+    ]
+  },
+  { lab:'google', labName:'Google DeepMind', color:'#4285f4', metric:'es',
+    notes: [
+      'Limited public enforcement data throughout the scoring period. DSA compliance obligations apply but quantified public reporting remained thin.',
+      'ES score rises to 2/4 in Q4 2025 reflecting emerging transparency reporting.',
+    ],
+    quarters: {
+      'Q2 2024': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Abuse monitoring described in Gemini API docs; automated scanning disclosed.', src:{title:'Gemini API Abuse Monitoring', url:'https://ai.google.dev/gemini-api/docs/usage-policies'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement data published.',          src:null},
+        {name:'Recency',      pts:0, note:'No standalone enforcement report within window.',    src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q3 2024': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Automated red-teaming and abuse monitoring documented.', src:{title:'Advancing Gemini Security Safeguards', url:'https://deepmind.google/blog/advancing-geminis-security-safeguards/'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement data published.',          src:null},
+        {name:'Recency',      pts:0, note:'No standalone enforcement report within window.',    src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q4 2024': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Monitoring policies disclosed in developer documentation.', src:{title:'Gemini API Usage Policies', url:'https://ai.google.dev/gemini-api/docs/usage-policies'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement data published.',          src:null},
+        {name:'Recency',      pts:0, note:'No standalone enforcement report within window.',    src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q1 2025': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Monitoring disclosed; context of Gemini 2.5 Pro card controversy.',  src:{title:'Gemini API Abuse Monitoring', url:'https://ai.google.dev/gemini-api/docs/usage-policies'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement data published.',          src:null},
+        {name:'Recency',      pts:0, note:'No enforcement report published within Q1 2025.',    src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q2 2025': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Monitoring policies documented.',                    src:{title:'Gemini Prohibited Use Policy', url:'https://support.google.com/gemini/answer/16625148'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified data published.',                      src:null},
+        {name:'Recency',      pts:0, note:'No enforcement report within window.',               src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q3 2025': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Monitoring documented; Gemini 2.5 Deep Think card published Aug 2025.', src:{title:'Gemini 2.5 Deep Think Model Card', url:'https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-2-5-Deep-Think-Model-Card.pdf'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement data published.',          src:null},
+        {name:'Recency',      pts:0, note:'No standalone enforcement report within window.',    src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q4 2025': { score:2, components:[
+        {name:'Disclosure',   pts:1, note:'DSA transparency reporting emerging; monitoring well-documented.', src:{title:'Gemini Model Cards Index', url:'https://deepmind.google/models/model-cards/'}},
+        {name:'Volume/Rate',  pts:1, note:'Emerging quantitative data in DSA-related reporting.', src:null},
+        {name:'Recency',      pts:0, note:'No standalone enforcement report published within window.', src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q1 2026': { score:2, components:[
+        {name:'Disclosure',   pts:1, note:'Monitoring and enforcement policies documented across platforms.', src:{title:'Gemini API Usage Policies', url:'https://ai.google.dev/gemini-api/docs/usage-policies'}},
+        {name:'Volume/Rate',  pts:1, note:'Some quantitative data in emerging transparency reporting.', src:null},
+        {name:'Recency',      pts:0, note:'No dedicated enforcement report published in window.', src:null},
+        {name:'Granularity',  pts:0, note:'No violation category breakdown published.',         src:null},
+      ]},
+    }
+  },
+  // ── META AI ───────────────────────────────────────
+  { lab:'meta', labName:'Meta AI', color:'#7c3aed', metric:'pucc',
+    notes: [
+      'Llama AUP uses broader categories than API-first labs — e.g. "weapons" rather than naming bio/chem/nuclear separately. Scored at explicitly named level.',
+      'Llama 4 AUP updated April 2025; added EU-specific restrictions for multimodal models.',
+      'Military use was prohibited then re-permitted for US government/contractors in November 2024.',
+    ],
+    sources: [
+      { title:'Llama 4 Acceptable Use Policy',  url:'https://www.llama.com/llama4/use-policy/' },
+      { title:'Llama 2 Acceptable Use Policy',  url:'https://ai.meta.com/llama/use-policy/' },
+      { title:'Stanford CRFM AUP Analysis',     url:'https://crfm.stanford.edu/2024/04/08/aups.html' },
+    ]
+  },
+  { lab:'meta', labName:'Meta AI', color:'#7c3aed', metric:'tai',
+    notes: [
+      'Scored 3/5 consistently. Model cards exist on HuggingFace and are updated with each release (Llama 3, 3.1, 3.2, 3.3, 4).',
+      'Cards document intended use and limitations (pts 1 & 4) and are current (pt 5). Lose points for lack of explicit risk classification table (pt 2) and thin red-team methodology (pt 3).',
+    ],
+    sources: [
+      { title:'Llama 3.1 Model Card (HuggingFace)',  url:'https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct' },
+      { title:'Llama 3.2 Model Card (HuggingFace)',  url:'https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct' },
+      { title:'Llama 3.3 Model Card (HuggingFace)',  url:'https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct' },
+    ]
+  },
+  { lab:'meta', labName:'Meta AI', color:'#7c3aed', metric:'es',
+    notes: [
+      'Lowest ES scores in the dataset. Meta provides a violation reporting mechanism (LlamaUseReport@meta.com) but publishes no quantified enforcement data.',
+      'Q4 2024 disclosure point reflects the publicised military-use enforcement action (subsequently reversed November 2024).',
+      'No standalone enforcement report or transparency report published in any scoring period.',
+    ],
+    quarters: {
+      'Q2 2024': { score:0, components:[
+        {name:'Disclosure',   pts:0, note:'No enforcement data published. Reporting email exists but no public output.', src:null},
+        {name:'Volume/Rate',  pts:0, note:'No quantified data.',                                src:null},
+        {name:'Recency',      pts:0, note:'No publication.',                                    src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q3 2024': { score:0, components:[
+        {name:'Disclosure',   pts:0, note:'No enforcement data published.',                     src:null},
+        {name:'Volume/Rate',  pts:0, note:'No quantified data.',                                src:null},
+        {name:'Recency',      pts:0, note:'No publication.',                                    src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q4 2024': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Military-use enforcement action publicised Q4 2024 (subsequently reversed — US government/contractors permitted November 2024).', src:{title:'Llama Military Use Policy Coverage', url:'https://crfm.stanford.edu/2024/04/08/aups.html'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement data published.',          src:null},
+        {name:'Recency',      pts:0, note:'Action publicised but not via structured report.',   src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q1 2025': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Reporting mechanism (LlamaUseReport@meta.com) active and documented in AUP.', src:{title:'Llama Acceptable Use Policy', url:'https://www.llama.com/llama4/use-policy/'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement data published.',          src:null},
+        {name:'Recency',      pts:0, note:'No enforcement report within window.',               src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q2 2025': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Reporting mechanism documented; Llama 4 AUP published April 2025.', src:{title:'Llama 4 Acceptable Use Policy', url:'https://www.llama.com/llama4/use-policy/'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified enforcement data published.',          src:null},
+        {name:'Recency',      pts:0, note:'No enforcement report within window.',               src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q3 2025': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Reporting mechanism active.',                        src:{title:'Llama 4 Acceptable Use Policy', url:'https://www.llama.com/llama4/use-policy/'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified data.',                                src:null},
+        {name:'Recency',      pts:0, note:'No enforcement report within window.',               src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q4 2025': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Reporting mechanism active.',                        src:{title:'Llama 4 Acceptable Use Policy', url:'https://www.llama.com/llama4/use-policy/'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified data published.',                      src:null},
+        {name:'Recency',      pts:0, note:'No enforcement report within window.',               src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+      'Q1 2026': { score:1, components:[
+        {name:'Disclosure',   pts:1, note:'Reporting mechanism active; no structured enforcement report published.', src:{title:'Llama 4 Acceptable Use Policy', url:'https://www.llama.com/llama4/use-policy/'}},
+        {name:'Volume/Rate',  pts:0, note:'No quantified data.',                                src:null},
+        {name:'Recency',      pts:0, note:'No enforcement report published within window.',     src:null},
+        {name:'Granularity',  pts:0, note:'No category breakdown.',                             src:null},
+      ]},
+    }
+  },
+];
+
+// ── Filter state ──────────────────────────────────────
+let srcLab = '', srcMetric = '';
+
+function setSrcFilter(type, btn) {
+  if (type === 'lab') {
+    srcLab = btn.dataset.lab;
+    document.querySelectorAll('[data-lab]').forEach(b => b.classList.remove('active'));
+  } else {
+    srcMetric = btn.dataset.metric;
+    document.querySelectorAll('[data-metric]').forEach(b => b.classList.remove('active'));
+  }
+  btn.classList.add('active');
+  renderSources();
+}
+
+function linkEl(src) {
+  if (!src) return '';
+  return `<a class="src-link" href="${src.url}" target="_blank" rel="noopener">${src.title}</a>`;
+}
+
+function renderSources() {
+  const q = (document.getElementById('srcSearch')?.value || '').toLowerCase();
+  const out = document.getElementById('sourcesOutput');
+  if (!out) return;
+
+  // Group by lab
+  const labOrder = ['openai','anthropic','google','meta'];
+  const labNames  = {openai:'OpenAI', anthropic:'Anthropic', google:'Google DeepMind', meta:'Meta AI'};
+  const labColors = {openai:'#10a37f', anthropic:'#cc785c', google:'#4285f4', meta:'#7c3aed'};
+
+  let html = '';
+  let anyResult = false;
+
+  labOrder.forEach(lab => {
+    if (srcLab && srcLab !== lab) return;
+    const entries = SOURCES_DB.filter(e => e.lab === lab && (!srcMetric || e.metric === srcMetric));
+    if (!entries.length) return;
+
+    let labHtml = '';
+    entries.forEach(entry => {
+      const metricLabel = {pucc:'PUCC — Prohibited Use Category Count', tai:'TAI — Transparency Artifact Index', es:'ES — Enforcement Signal'}[entry.metric];
+      let entryText = (entry.notes||[]).join(' ') + (entry.sources||[]).map(s=>s.title).join(' ');
+      if (entry.quarters) Object.values(entry.quarters).forEach(qd => qd.components.forEach(c => entryText += ' ' + c.note + ' ' + (c.src?.title||'')));
+      if (q && !entryText.toLowerCase().includes(q) && !metricLabel.toLowerCase().includes(q) && !labNames[lab].toLowerCase().includes(q)) return;
+
+      let inner = '';
+      // Notes
+      if (entry.notes?.length) inner += entry.notes.map(n => `<p class="src-note">• ${n}</p>`).join('');
+      // Sources
+      if (entry.sources?.length) inner += '<div style="margin:8px 0 4px">' + entry.sources.map(s => linkEl(s)).join('') + '</div>';
+      // ES quarter breakdown
+      if (entry.quarters) {
+        inner += '<div class="src-quarter-grid" style="margin-top:12px">';
+        QUARTERS.forEach(qtr => {
+          const qd = entry.quarters[qtr];
+          if (!qd) return;
+          if (q && !qtr.toLowerCase().includes(q) && !qd.components.some(c => c.note.toLowerCase().includes(q) || (c.src?.title||'').toLowerCase().includes(q))) return;
+          const scoreColor = qd.score >= 3 ? '#15803d' : qd.score >= 2 ? '#854d0e' : '#dc2626';
+          const scoreBg    = qd.score >= 3 ? '#dcfce7'  : qd.score >= 2 ? '#fef9c3'  : '#fee2e2';
+          inner += `<div class="src-q-card">
+            <div class="src-q-label">${qtr} <span class="src-q-badge" style="background:${scoreBg};color:${scoreColor}">${qd.score}/4</span></div>`;
+          qd.components.forEach(c => {
+            inner += `<div class="src-component">
+              <div class="src-check ${c.pts ? 'yes':'no'}">${c.pts ? '✓':'✗'}</div>
+              <div><strong>${c.name}:</strong> ${c.note}${c.src ? ' ' + linkEl(c.src) : ''}</div>
+            </div>`;
+          });
+          inner += '</div>';
+        });
+        inner += '</div>';
+      }
+
+      if (inner) {
+        labHtml += `<div class="src-metric-block">
+          <div class="src-metric-title">${metricLabel}</div>${inner}</div>`;
+      }
+    });
+
+    if (labHtml) {
+      anyResult = true;
+      html += `<div class="src-lab-block">
+        <div class="src-lab-title">
+          <div class="src-lab-dot" style="background:${labColors[lab]}"></div>${labNames[lab]}
+        </div>${labHtml}</div>`;
+    }
+  });
+
+  out.innerHTML = anyResult ? html : '<div class="src-no-results">No sources match your search or filters.</div>';
+}
+
+// Initial render
+renderSources();
 
 // ══════════════════════════════════════════════════════
 //  POPULATE QUARTER FILTER
