@@ -221,23 +221,23 @@
   <div class="kpi-row">
     <div class="kpi openai">
       <div class="lab">OpenAI</div>
-      <div class="score" style="color:var(--openai)">0.96</div>
-      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.14 vs Q2 2024</div>
+      <div class="score" style="color:var(--openai)">0.97</div>
+      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.12 vs Q2 2024</div>
     </div>
     <div class="kpi anthropic">
       <div class="lab">Anthropic</div>
-      <div class="score" style="color:var(--anthropic)">0.82</div>
-      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.26 vs Q2 2024</div>
+      <div class="score" style="color:var(--anthropic)">0.84</div>
+      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.22 vs Q2 2024 &nbsp;·&nbsp; ⚠ RSP rollback</div>
     </div>
     <div class="kpi google">
       <div class="lab">Google DeepMind</div>
-      <div class="score" style="color:var(--google)">0.64</div>
-      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.14 vs Q2 2024</div>
+      <div class="score" style="color:var(--google)">0.69</div>
+      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.12 vs Q2 2024</div>
     </div>
     <div class="kpi meta">
       <div class="lab">Meta AI</div>
       <div class="score" style="color:var(--meta)">0.46</div>
-      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.14 vs Q2 2024</div>
+      <div class="delta">Q1 2026 GDS &nbsp;·&nbsp; ▲ +0.08 vs Q2 2024 &nbsp;·&nbsp; ⚠ no RSP equivalent</div>
     </div>
   </div>
 
@@ -250,7 +250,7 @@
 
   <div class="panel">
     <h3>Composite GDS Over Time</h3>
-    <div class="sub">Weighted composite: PUCC × 0.30 + TAI × 0.30 + ES × 0.40 &nbsp;|&nbsp; Scale 0–1</div>
+    <div class="sub">Weighted composite: PUCC × 0.25 + TAI × 0.25 + ES × 0.35 + CII × 0.15 &nbsp;|&nbsp; Scale 0–1 &nbsp;·&nbsp; CII added v1.1 to capture commitment rollbacks</div>
     <div class="chart-wrap"><canvas id="chartGDS"></canvas></div>
   </div>
 </div>
@@ -289,6 +289,12 @@
     <div class="sub">Normalized: composite score / 4 &nbsp;·&nbsp; Components: disclosure (1pt) + volume (1pt) + recency (1pt) + granularity bonus (1pt)</div>
     <div class="chart-wrap" style="height:300px"><canvas id="chartES"></canvas></div>
   </div>
+
+  <div class="panel">
+    <h3>CII — Commitment Integrity Index</h3>
+    <div class="sub">Normalized: maintained commitments / 4 &nbsp;·&nbsp; Components: safety evaluations (1pt) + transparency commitments (1pt) + external oversight (1pt) + deployment restrictions (1pt) &nbsp;·&nbsp; Rollbacks reduce score; reinstatement restores it</div>
+    <div class="chart-wrap" style="height:300px"><canvas id="chartCII"></canvas></div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════
@@ -301,7 +307,7 @@
   </div>
 
   <div class="note-box">
-    🔎 <strong>Key events:</strong> Google DeepMind released Gemini 2.5 Pro in Q1 2025 without a system card (UK lawmakers cited breach of safety commitments) — reflected in Q2 2025 TAI dip. OpenAI began publishing structured "Disrupting Malicious Uses" reports from Q4 2024, driving ES gains. Anthropic added malicious cyber operations to its Usage Policy in Q2 2025. Meta's Q4 2024 ES uptick reflects the publicised military-use enforcement action.
+    🔎 <strong>Key events:</strong> Google DeepMind released Gemini 2.5 Pro in Q1 2025 without a system card (UK lawmakers cited breach of safety commitments) — reflected in Q2 2025 TAI and CII dip. OpenAI began publishing structured "Disrupting Malicious Uses" reports from Q4 2024, driving ES gains. Anthropic added malicious cyber operations to its Usage Policy in Q2 2025. Meta's Q4 2024 ES uptick reflects the publicised military-use enforcement action (subsequently reversed). <strong>Q1 2026:</strong> Anthropic RSP v3.0 (Feb 2026) removed its training-pause commitment — the first formal rollback by a leading lab, reducing Anthropic's CII from 4 to 3. CII sub-score added in GDS v1.1.
   </div>
 
   <div class="filter-row">
@@ -333,6 +339,8 @@
           <th>TAI norm</th>
           <th>ES raw</th>
           <th>ES norm</th>
+          <th>CII raw</th>
+          <th>CII norm</th>
           <th>GDS</th>
         </tr>
       </thead>
@@ -351,25 +359,30 @@
   </div>
 
   <div class="formula-box">
-    <div class="f">GDS = (PUCC<sub>norm</sub> × 0.30) + (TAI<sub>norm</sub> × 0.30) + (ES<sub>norm</sub> × 0.40)</div>
-    <div class="note">ES carries highest weight: it is the only metric that measures governance in practice, not governance on paper — and the hardest to game.</div>
+    <div class="f">GDS = (PUCC<sub>norm</sub> × 0.25) + (TAI<sub>norm</sub> × 0.25) + (ES<sub>norm</sub> × 0.35) + (CII<sub>norm</sub> × 0.15)</div>
+    <div class="note">v1.1 — CII added to capture commitment rollbacks. A lab that removes a formal safety commitment is penalised, not treated the same as one that never made it. ES remains highest weight as the only metric measuring governance in practice.</div>
   </div>
 
-  <div class="method-grid">
+  <div class="method-grid" style="grid-template-columns:repeat(4,1fr)">
     <div class="method-card">
-      <div class="weight">30%</div>
+      <div class="weight">25%</div>
       <h4>PUCC — Prohibited Use Category Count</h4>
       <p>Count of distinct high-risk use categories explicitly named in each lab's usage / acceptable use policy. Normalized against a theoretical max of 15. Tracks additions and deletions each quarter.</p>
     </div>
     <div class="method-card">
-      <div class="weight">30%</div>
+      <div class="weight">25%</div>
       <h4>TAI — Transparency Artifact Index</h4>
       <p>Binary 0–5 checklist per lab per quarter: system card exists, risk classification table present, red-team methodology disclosed, limitations documented, updated within 12 months. Scored on the most recently released production model.</p>
     </div>
     <div class="method-card">
-      <div class="weight">40%</div>
+      <div class="weight">35%</div>
       <h4>ES — Enforcement Signal</h4>
-      <p>0–4 composite: disclosure of any enforcement data (1pt), quantified volume or rate (1pt), published within 12 months (1pt), breakdown by violation category (1pt). Most important sub-score — highest weight precisely because it cannot be improved by communications alone.</p>
+      <p>0–4 composite: disclosure of any enforcement data (1pt), quantified volume or rate (1pt), published within 12 months (1pt), breakdown by violation category (1pt). Highest weight: cannot be improved by communications alone.</p>
+    </div>
+    <div class="method-card" style="border-top:3px solid #dc2626">
+      <div class="weight" style="color:#dc2626">15%</div>
+      <h4>CII — Commitment Integrity Index</h4>
+      <p>0–4 composite tracking whether formal public safety commitments are honoured. Rollbacks reduce the score; reinstatement restores it. A lab that removes a commitment scores lower than one that never made it.</p>
     </div>
   </div>
 
@@ -422,6 +435,20 @@
     </div>
   </details>
 
+  <details class="method-detail" style="border-left:3px solid #dc2626">
+    <summary>CII — Commitment Integrity Index (added v1.1)</summary>
+    <div class="inner">
+      <p style="margin-bottom:10px">Each lab is scored 0–4 each quarter based on whether four categories of formal public safety commitment are actively maintained. A commitment that is made and then retracted scores 0 — lower than a lab that never made the commitment. Reinstatement in a later quarter restores the point.</p>
+      <ul>
+        <li><strong>Safety evaluations (1pt):</strong> Lab maintains a formal, documented pre-deployment evaluation regime for frontier models — equivalent to an RSP, Preparedness Framework, or Frontier Safety Framework — that specifies concrete capability thresholds or "red lines." Source: Anthropic RSP v3.0; OpenAI Preparedness Framework v2; Google Frontier Safety Framework v3.</li>
+        <li><strong>Transparency commitments (1pt):</strong> Lab maintains active commitments to publish system cards / model cards for all production models prior to or at release, as pledged under the Frontier AI Safety Commitments (Bletchley Park, 2023) or equivalent. A release without a card in a given quarter triggers a 0 for that quarter.</li>
+        <li><strong>External oversight (1pt):</strong> Lab participates in a third-party safety review, independent audit mechanism, or government-recognised safety testing programme. Labs that explicitly refused or declined such mechanisms score 0. Meta's absence of a formal RSP-equivalent by the Feb 2025 Bletchley deadline scores 0 throughout.</li>
+        <li><strong>Deployment restrictions (1pt):</strong> Lab maintains at least one formally stated, specific deployment threshold or capability-based deployment restriction (e.g., a pause commitment, a "Critical" capability trigger, or a hard model-size threshold). Removal of a previously stated restriction reduces the score immediately. Anthropic's RSP v3.0 (Feb 2026) removed the training-pause commitment — the first documented rollback in the dataset.</li>
+      </ul>
+      <p style="margin-top:12px;font-style:italic">RSP equivalents tracked: Anthropic Responsible Scaling Policy (v1 Jun 2023 → v3.0 Feb 2026) · OpenAI Preparedness Framework (v1 Dec 2023 → v2 Apr 2025) · Google Frontier Safety Framework (v1 May 2024 → v3 Mar 2026) · Meta: no formal RSP equivalent published.</p>
+    </div>
+  </details>
+
   <!-- SOURCES SECTION -->
   <div class="sources-section">
     <div class="sources-header">
@@ -442,6 +469,7 @@
         <button class="src-pill" data-metric="pucc" onclick="setSrcFilter('metric',this)">PUCC</button>
         <button class="src-pill" data-metric="tai"  onclick="setSrcFilter('metric',this)">TAI</button>
         <button class="src-pill" data-metric="es"   onclick="setSrcFilter('metric',this)">ES</button>
+        <button class="src-pill" data-metric="cii"  onclick="setSrcFilter('metric',this)" style="--pc:#dc2626">CII</button>
       </div>
     </div>
     <div id="sourcesOutput"></div>
@@ -450,11 +478,12 @@
   <details class="method-detail">
     <summary>Forward Weight Schedule</summary>
     <div class="inner">
-      <p>As enforcement disclosure norms improve under regulatory pressure, ES weight is expected to increase.</p>
+      <p>As enforcement disclosure norms improve under regulatory pressure, ES weight is expected to increase. CII weight may grow as commitment rollbacks become a more discriminating signal.</p>
       <ul>
-        <li><strong>v1.0 (2026):</strong> PUCC 0.30 · TAI 0.30 · ES 0.40</li>
-        <li><strong>v2.0 (2027):</strong> PUCC 0.25 · TAI 0.25 · ES 0.50</li>
-        <li><strong>v3.0 (2028+):</strong> PUCC 0.20 · TAI 0.20 · ES 0.60</li>
+        <li><strong>v1.0 (2024–2025):</strong> PUCC 0.30 · TAI 0.30 · ES 0.40 — original three-factor formula</li>
+        <li><strong>v1.1 (Q1 2026, current):</strong> PUCC 0.25 · TAI 0.25 · ES 0.35 · CII 0.15 — CII added to capture commitment rollbacks</li>
+        <li><strong>v2.0 (2027, planned):</strong> PUCC 0.20 · TAI 0.20 · ES 0.45 · CII 0.15 — ES elevated as disclosure norms improve</li>
+        <li><strong>v3.0 (2028+, planned):</strong> PUCC 0.15 · TAI 0.20 · ES 0.50 · CII 0.15 — ES majority weight when quantitative enforcement data is routine</li>
       </ul>
     </div>
   </details>
@@ -473,31 +502,48 @@ const DATA = {
     pucc: [11,11,12,12,12,13,13,13],
     tai:  [ 5, 5, 5, 5, 5, 5, 5, 5],
     es:   [ 3, 3, 4, 4, 4, 4, 4, 4],
+    // CII: 4 components — safety evals, transparency, external oversight, deployment restrictions
+    // OpenAI: Preparedness Framework maintained; system cards per model; SAG process; High/Critical thresholds upheld throughout
+    cii:  [ 4, 4, 4, 4, 4, 4, 4, 4],
   },
   anthropic: {
-    pucc: [ 8, 8, 9, 9,10,10,11,11],
+    pucc: [ 8, 8, 9, 9,10,10,11,13], // Q1 2026: CBRN now named granularly (bio/chem/nuclear/rad) per RSP v3.0 + AUP update
     tai:  [ 5, 5, 5, 5, 5, 5, 5, 5],
     es:   [ 1, 1, 1, 2, 2, 2, 2, 3],
+    // CII: RSP pause commitment removed in RSP v3.0 (Feb 2026) → deployment restrictions component drops to 0 in Q1 2026
+    cii:  [ 4, 4, 4, 4, 4, 4, 4, 3],
   },
   google: {
     pucc: [ 8, 8, 9, 9, 9,10,10,10],
     tai:  [ 4, 4, 4, 4, 2, 4, 4, 4],
     es:   [ 1, 1, 1, 1, 1, 1, 2, 2],
+    // CII: Frontier AI Safety Commitments (Bletchley) breached Q2 2025 when Gemini 2.5 Pro launched without system card;
+    // transparency component restored Q3 2025 after card published Aug 2025; breach remains on record
+    cii:  [ 4, 4, 4, 4, 3, 4, 4, 4],
   },
   meta: {
     pucc: [ 7, 8, 8, 8, 8, 8, 9, 9],
     tai:  [ 3, 3, 3, 3, 3, 3, 3, 3],
     es:   [ 0, 0, 1, 1, 1, 1, 1, 1],
+    // CII: No formal RSP equivalent published by Feb 2025 Bletchley deadline (external oversight = 0 throughout);
+    // military-use prohibition commitment reversed Nov 2024 (deployment restrictions drops from Q4 2024)
+    cii:  [ 3, 3, 2, 2, 2, 2, 2, 2],
   },
 };
 
-const PUCC_MAX = 15, TAI_MAX = 5, ES_MAX = 4;
-const W = { pucc: 0.30, tai: 0.30, es: 0.40 };
+const PUCC_MAX = 15, TAI_MAX = 5, ES_MAX = 4, CII_MAX = 4;
+// v1.0 weights — CII added; ES reduced from 0.40 to 0.35 to accommodate
+const W = { pucc: 0.25, tai: 0.25, es: 0.35, cii: 0.15 };
 
 function norm(v, max) { return Math.round((v / max) * 1000) / 1000; }
 function gds(lab, qi) {
   const d = DATA[lab];
-  return Math.round((norm(d.pucc[qi], PUCC_MAX)*W.pucc + norm(d.tai[qi], TAI_MAX)*W.tai + norm(d.es[qi], ES_MAX)*W.es) * 1000) / 1000;
+  return Math.round((
+    norm(d.pucc[qi], PUCC_MAX)*W.pucc +
+    norm(d.tai[qi],  TAI_MAX )*W.tai  +
+    norm(d.es[qi],   ES_MAX  )*W.es   +
+    norm(d.cii[qi],  CII_MAX )*W.cii
+  ) * 1000) / 1000;
 }
 
 const LABS = [
@@ -513,6 +559,7 @@ LABS.forEach(l => {
   l.puccN = QUARTERS.map((_,i) => norm(DATA[l.key].pucc[i], PUCC_MAX));
   l.taiN  = QUARTERS.map((_,i) => norm(DATA[l.key].tai[i], TAI_MAX));
   l.esN   = QUARTERS.map((_,i) => norm(DATA[l.key].es[i], ES_MAX));
+  l.ciiN  = QUARTERS.map((_,i) => norm(DATA[l.key].cii[i], CII_MAX));
 });
 
 // ══════════════════════════════════════════════════════
@@ -553,6 +600,7 @@ buildChart('chartGDS',  'gds');
 buildChart('chartPUCC', 'puccN');
 buildChart('chartTAI',  'taiN');
 buildChart('chartES',   'esN');
+buildChart('chartCII',  'ciiN');
 
 // ══════════════════════════════════════════════════════
 //  BUILD SCORECARD TABLE
@@ -571,8 +619,11 @@ QUARTERS.forEach((q, qi) => {
     const pn = norm(d.pucc[qi], PUCC_MAX);
     const tn = norm(d.tai[qi],  TAI_MAX);
     const en = norm(d.es[qi],   ES_MAX);
+    const cn = norm(d.cii[qi],  CII_MAX);
     const g  = gds(lab.key, qi);
     const sc = scoreColor(g);
+    const ciiBg = cn >= 1 ? '#dcfce7' : cn >= 0.75 ? '#fef9c3' : '#fee2e2';
+    const ciiCl = cn >= 1 ? '#166534' : cn >= 0.75 ? '#854d0e' : '#991b1b';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${q}</td>
@@ -583,6 +634,8 @@ QUARTERS.forEach((q, qi) => {
       <td>${tn.toFixed(2)}</td>
       <td>${d.es[qi]}</td>
       <td>${en.toFixed(2)}</td>
+      <td>${d.cii[qi]}</td>
+      <td><span class="badge" style="background:${ciiBg};color:${ciiCl}">${cn.toFixed(2)}</span></td>
       <td><span class="badge" style="background:${sc.split(';')[0].replace('background:','')};${sc.split(';')[1]}">${g.toFixed(2)}</span></td>
     `;
     tbody.appendChild(tr);
@@ -606,6 +659,7 @@ const SOURCES_DB = [
   { lab:'openai', labName:'OpenAI', color:'#10a37f', metric:'tai',
     notes: [
       'TAI = 5/5 across all quarters. All cards include explicit risk taxonomies, multi-phase red-team methodology, and documented failure modes.',
+      'OpenAI\'s RSP equivalent is the Preparedness Framework (v1 Dec 2023, v2 Apr 2025). It defines Critical and High capability thresholds and mandates model evaluations before deployment — directly shaping what appears in system cards.',
     ],
     sources: [
       { title:'GPT-4o System Card (Aug 2024)', url:'https://arxiv.org/pdf/2410.21276' },
@@ -613,6 +667,7 @@ const SOURCES_DB = [
       { title:'o1 System Card (Dec 2024)',     url:'https://cdn.openai.com/o1-system-card-20241205.pdf' },
       { title:'o3 & o4-mini System Card (Apr 2025)', url:'https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf' },
       { title:'OpenAI System Cards Index',    url:'https://openai.com/safety/' },
+      { title:'Preparedness Framework v2 (Apr 2025)', url:'https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf' },
     ]
   },
   { lab:'openai', labName:'OpenAI', color:'#10a37f', metric:'es',
@@ -688,6 +743,7 @@ const SOURCES_DB = [
     notes: [
       'TAI = 5/5 across all quarters. Cards include explicit safety evaluations, RSP-linked risk classifications, and red-team methodology disclosures.',
       'Anthropic maintains a dedicated system cards page updated with each major model release.',
+      'Anthropic\'s RSP (Responsible Scaling Policy) is directly referenced in system cards — each card documents ASL level assigned and evaluation results. RSP v3.0 (Feb 2026) published alongside the Claude Sonnet 4 / Opus 4 generation cards.',
     ],
     sources: [
       { title:'Claude 3 Model Card (Mar 2024)',              url:'https://assets.anthropic.com/m/61e7d27f8c8f5919/original/Claude-3-Model-Card.pdf' },
@@ -695,6 +751,8 @@ const SOURCES_DB = [
       { title:'Claude 3.7 Sonnet System Card (Feb 2025)',    url:'https://www.anthropic.com/claude-3-7-sonnet-system-card' },
       { title:'Claude Opus 4 & Sonnet 4 System Card (May 2025)', url:'https://www-cdn.anthropic.com/4263b940cabb546aa0e3283f35b686f4f3b2ff47.pdf' },
       { title:'All Anthropic System Cards',                  url:'https://www.anthropic.com/system-cards' },
+      { title:'Anthropic RSP v3.0 (Feb 2026)',               url:'https://anthropic.com/responsible-scaling-policy/rsp-v3-0' },
+      { title:'Anthropic RSP version history',               url:'https://www.anthropic.com/responsible-scaling-policy' },
     ]
   },
   { lab:'anthropic', labName:'Anthropic', color:'#cc785c', metric:'es',
@@ -771,6 +829,7 @@ const SOURCES_DB = [
       'Q2 2025 scored 2/5 — Gemini 2.5 Pro was released March 2025 with no accompanying system card, prompting a formal letter from 60 UK MPs citing breach of Frontier AI Safety Commitments signed at Bletchley Park.',
       'Card for Gemini 2.5 Deep Think published August 2025; score restored to 4/5 in Q3 2025.',
       'Consistently scored 4/5 (not 5/5) due to risk classification tables being less explicit than OpenAI/Anthropic cards.',
+      'Google\'s RSP equivalent is the Frontier Safety Framework (FSF). v1 (May 2024) established evaluation commitments; v3 (Mar 2026) strengthened thresholds. FSF directly informs what is disclosed in model cards and system cards.',
     ],
     sources: [
       { title:'Gemini Model Cards Index',                       url:'https://deepmind.google/models/model-cards/' },
@@ -778,6 +837,7 @@ const SOURCES_DB = [
       { title:'Gemini 2.5 Deep Think Model Card (Aug 2025)',    url:'https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-2-5-Deep-Think-Model-Card.pdf' },
       { title:'Gemini 3 Pro Model Card (Dec 2025)',             url:'https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-3-Pro-Model-Card.pdf' },
       { title:'UK MPs letter re: Gemini 2.5 Pro safety report', url:'https://fortune.com/2025/08/29/british-lawmakers-accuse-google-deepmind-of-breach-of-trust-over-delayed-gemini-2-5-pro-safety-report/' },
+      { title:'Google Frontier Safety Framework v3 (Mar 2026)', url:'https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/strengthening-our-frontier-safety-framework/frontier-safety-framework_3.pdf' },
     ]
   },
   { lab:'google', labName:'Google DeepMind', color:'#4285f4', metric:'es',
@@ -853,11 +913,13 @@ const SOURCES_DB = [
     notes: [
       'Scored 3/5 consistently. Model cards exist on HuggingFace and are updated with each release (Llama 3, 3.1, 3.2, 3.3, 4).',
       'Cards document intended use and limitations (pts 1 & 4) and are current (pt 5). Lose points for lack of explicit risk classification table (pt 2) and thin red-team methodology (pt 3).',
+      'Meta has no formal RSP equivalent. Unlike OpenAI (Preparedness Framework), Anthropic (RSP), and Google (Frontier Safety Framework), Meta did not publish a frontier safety framework by the February 2025 Bletchley deadline. Meta\'s model cards therefore lack the RSP-linked risk-classification tier that elevates the other labs\' TAI scores.',
     ],
     sources: [
       { title:'Llama 3.1 Model Card (HuggingFace)',  url:'https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct' },
       { title:'Llama 3.2 Model Card (HuggingFace)',  url:'https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct' },
       { title:'Llama 3.3 Model Card (HuggingFace)',  url:'https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct' },
+      { title:'Frontier AI Safety Commitments deadline (Feb 2025)', url:'https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024' },
     ]
   },
   { lab:'meta', labName:'Meta AI', color:'#7c3aed', metric:'es',
@@ -917,6 +979,270 @@ const SOURCES_DB = [
       ]},
     }
   },
+
+  // ══════════════════════════════════════════════════════
+  // CII — COMMITMENT INTEGRITY INDEX (added v1.1)
+  // ══════════════════════════════════════════════════════
+
+  // ── OPENAI CII ────────────────────────────────────────
+  { lab:'openai', labName:'OpenAI', color:'#10a37f', metric:'cii',
+    notes: [
+      'CII = 4/4 throughout the scoring period. OpenAI has consistently maintained all four commitment categories.',
+      'Preparedness Framework v1 published Dec 2023; v2 published April 2025 — strengthened Critical/High capability thresholds without removing any prior commitments.',
+      'System cards published for all major model releases. Safety Advisory Group (SAG) mechanism provides external oversight. Critical and High deployment thresholds have not been rolled back.',
+    ],
+    sources: [
+      { title:'OpenAI Preparedness Framework v2 (Apr 2025)', url:'https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf' },
+      { title:'OpenAI Safety Advisory Group', url:'https://openai.com/safety/' },
+      { title:'Frontier AI Safety Commitments (Bletchley)', url:'https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024' },
+    ],
+    quarters: {
+      'Q2 2024': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'Preparedness Framework v1 (Dec 2023) in force; evaluation regime documented.',   src:{title:'Preparedness Framework v1', url:'https://openai.com/preparedness/'}},
+        {name:'Transparency commits', pts:1, note:'System cards published for all production models.',                              src:null},
+        {name:'External oversight',   pts:1, note:'Safety Advisory Group active; Bletchley commitments signed.',                   src:{title:'Frontier AI Safety Commitments', url:'https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024'}},
+        {name:'Deployment restrictions', pts:1, note:'Critical capability threshold: no deployment until safeguards demonstrated.', src:null},
+      ]},
+      'Q3 2024': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'Preparedness Framework maintained; GPT-4o and o1 evaluations completed.',         src:null},
+        {name:'Transparency commits', pts:1, note:'System cards published for GPT-4o (Aug 2024) and o1 (Sep 2024).',              src:{title:'o1 System Card (Sep 2024)', url:'https://cdn.openai.com/o1-system-card.pdf'}},
+        {name:'External oversight',   pts:1, note:'SAG process active.',                                                            src:null},
+        {name:'Deployment restrictions', pts:1, note:'Critical/High thresholds maintained; no rollback.',                          src:null},
+      ]},
+      'Q4 2024': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'Preparedness Framework active; o1 (Dec 2024) evaluations completed.',            src:{title:'o1 System Card (Dec 2024)', url:'https://cdn.openai.com/o1-system-card-20241205.pdf'}},
+        {name:'Transparency commits', pts:1, note:'System card published.',                                                         src:null},
+        {name:'External oversight',   pts:1, note:'SAG process maintained.',                                                        src:null},
+        {name:'Deployment restrictions', pts:1, note:'Thresholds maintained; no rollback.',                                        src:null},
+      ]},
+      'Q1 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'Preparedness Framework v2 in preparation; existing evaluation regime maintained.', src:null},
+        {name:'Transparency commits', pts:1, note:'Cards published on schedule.',                                                   src:null},
+        {name:'External oversight',   pts:1, note:'SAG active.',                                                                    src:null},
+        {name:'Deployment restrictions', pts:1, note:'No rollback.',                                                               src:null},
+      ]},
+      'Q2 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'Preparedness Framework v2 published April 2025 — strengthened, not weakened.',   src:{title:'Preparedness Framework v2 (Apr 2025)', url:'https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf'}},
+        {name:'Transparency commits', pts:1, note:'o3 & o4-mini system card published.',                                           src:{title:'o3 & o4-mini System Card', url:'https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf'}},
+        {name:'External oversight',   pts:1, note:'SAG active.',                                                                    src:null},
+        {name:'Deployment restrictions', pts:1, note:'Critical/High thresholds maintained in v2.',                                 src:null},
+      ]},
+      'Q3 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'Preparedness Framework v2 maintained.',                                          src:null},
+        {name:'Transparency commits', pts:1, note:'System cards published for new models.',                                        src:null},
+        {name:'External oversight',   pts:1, note:'SAG process active.',                                                            src:null},
+        {name:'Deployment restrictions', pts:1, note:'No rollback.',                                                               src:null},
+      ]},
+      'Q4 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'Evaluation regime maintained under Preparedness Framework v2.',                   src:null},
+        {name:'Transparency commits', pts:1, note:'All production model cards current.',                                           src:null},
+        {name:'External oversight',   pts:1, note:'SAG active.',                                                                    src:null},
+        {name:'Deployment restrictions', pts:1, note:'No rollback.',                                                               src:null},
+      ]},
+      'Q1 2026': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'Preparedness Framework v2 in force with no retractions.',                        src:{title:'Preparedness Framework v2', url:'https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf'}},
+        {name:'Transparency commits', pts:1, note:'System cards maintained for all current production models.',                    src:{title:'OpenAI Safety Hub', url:'https://openai.com/safety/'}},
+        {name:'External oversight',   pts:1, note:'SAG process active; no withdrawal from oversight mechanisms.',                  src:null},
+        {name:'Deployment restrictions', pts:1, note:'Critical/High thresholds active; no rollback documented.',                   src:null},
+      ]},
+    }
+  },
+
+  // ── ANTHROPIC CII ─────────────────────────────────────
+  { lab:'anthropic', labName:'Anthropic', color:'#cc785c', metric:'cii',
+    notes: [
+      'CII = 4/4 through Q4 2025. Drops to 3/4 in Q1 2026 when RSP v3.0 (Feb 2026) removed the training-pause commitment — the deployment-restrictions component reduces from 1 to 0.',
+      'Anthropic\'s RSP is the most detailed formal safety framework in the dataset. v1.0 (Sep 2023), v1.1 (May 2024), v2.0 (Oct 2024), v3.0 (Feb 2026).',
+      'The v3.0 rollback: RSP v2.0 required Anthropic to pause certain model deployments if Critical ASL thresholds were reached without satisfactory mitigations. RSP v3.0 removed this hard pause obligation, replacing it with a broader "responsible scaling" process. This is scored as a deployment-restrictions rollback.',
+    ],
+    sources: [
+      { title:'Anthropic RSP v3.0 (Feb 2026)',   url:'https://anthropic.com/responsible-scaling-policy/rsp-v3-0' },
+      { title:'Anthropic RSP v2.0 (Oct 2024)',   url:'https://anthropic.com/responsible-scaling-policy/rsp-v2-0' },
+      { title:'Anthropic RSP version history',   url:'https://www.anthropic.com/responsible-scaling-policy' },
+      { title:'Frontier AI Safety Commitments',  url:'https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024' },
+    ],
+    quarters: {
+      'Q2 2024': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'RSP v1.1 (May 2024) in force; ASL-2 evaluation regime documented.',             src:{title:'RSP v1.1', url:'https://www.anthropic.com/responsible-scaling-policy'}},
+        {name:'Transparency commits', pts:1, note:'System cards published for Claude 3 family (Mar 2024).',                        src:{title:'Claude 3 Model Card', url:'https://assets.anthropic.com/m/61e7d27f8c8f5919/original/Claude-3-Model-Card.pdf'}},
+        {name:'External oversight',   pts:1, note:'Bletchley commitments signed; external safety partnerships disclosed.',         src:{title:'Frontier AI Safety Commitments', url:'https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024'}},
+        {name:'Deployment restrictions', pts:1, note:'RSP v1.1 pause commitment: if ASL-3 thresholds reached without mitigations, pause training.', src:null},
+      ]},
+      'Q3 2024': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'RSP v1.1 maintained; Claude 3.5 Sonnet evaluations documented.',                src:null},
+        {name:'Transparency commits', pts:1, note:'System card addendum published Oct 2024.',                                      src:{title:'Claude 3.5 Sonnet Addendum (Oct 2024)', url:'https://assets.anthropic.com/m/1cd9d098ac3e6467/original/Claude-3-Model-Card-October-Addendum.pdf'}},
+        {name:'External oversight',   pts:1, note:'Third-party partnerships active.',                                              src:null},
+        {name:'Deployment restrictions', pts:1, note:'Pause commitment maintained in RSP v1.1.',                                   src:null},
+      ]},
+      'Q4 2024': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'RSP v2.0 (Oct 2024) strengthens evaluation regime with ASL-3 thresholds.',      src:{title:'RSP v2.0 (Oct 2024)', url:'https://anthropic.com/responsible-scaling-policy/rsp-v2-0'}},
+        {name:'Transparency commits', pts:1, note:'System cards maintained.',                                                      src:null},
+        {name:'External oversight',   pts:1, note:'External safety partnerships and third-party audits maintained.',               src:null},
+        {name:'Deployment restrictions', pts:1, note:'RSP v2.0 retains hard pause: if ASL-4 capabilities reached without safeguards, pause deployment.', src:null},
+      ]},
+      'Q1 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'RSP v2.0 evaluation regime in force.',                                          src:null},
+        {name:'Transparency commits', pts:1, note:'Claude 3.7 Sonnet system card published Feb 2025.',                            src:{title:'Claude 3.7 Sonnet System Card', url:'https://www.anthropic.com/claude-3-7-sonnet-system-card'}},
+        {name:'External oversight',   pts:1, note:'External safety testing maintained.',                                           src:null},
+        {name:'Deployment restrictions', pts:1, note:'Pause commitment active under RSP v2.0.',                                   src:null},
+      ]},
+      'Q2 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'RSP v2.0 maintained; evaluations described in Claude Opus 4 card (May 2025).', src:{title:'Claude Opus 4 System Card', url:'https://www-cdn.anthropic.com/4263b940cabb546aa0e3283f35b686f4f3b2ff47.pdf'}},
+        {name:'Transparency commits', pts:1, note:'System cards on schedule.',                                                     src:null},
+        {name:'External oversight',   pts:1, note:'Third-party partnerships active.',                                              src:null},
+        {name:'Deployment restrictions', pts:1, note:'Pause commitment active.',                                                   src:null},
+      ]},
+      'Q3 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'RSP v2.0 active.',                                                              src:null},
+        {name:'Transparency commits', pts:1, note:'System cards maintained.',                                                     src:null},
+        {name:'External oversight',   pts:1, note:'External oversight active.',                                                    src:null},
+        {name:'Deployment restrictions', pts:1, note:'Pause commitment maintained.',                                               src:null},
+      ]},
+      'Q4 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'RSP v2.0 in force through Q4 2025; v3.0 published Feb 2026.',                   src:null},
+        {name:'Transparency commits', pts:1, note:'System cards current.',                                                         src:null},
+        {name:'External oversight',   pts:1, note:'Third-party oversight active.',                                                 src:null},
+        {name:'Deployment restrictions', pts:1, note:'Pause commitment still active in Q4 2025 under RSP v2.0.',                  src:null},
+      ]},
+      'Q1 2026': { score:3, components:[
+        {name:'Safety evals',        pts:1, note:'RSP v3.0 (Feb 2026) maintains ASL evaluation framework; structure retained.',   src:{title:'RSP v3.0 (Feb 2026)', url:'https://anthropic.com/responsible-scaling-policy/rsp-v3-0'}},
+        {name:'Transparency commits', pts:1, note:'System cards maintained.',                                                     src:null},
+        {name:'External oversight',   pts:1, note:'External oversight participation maintained.',                                  src:null},
+        {name:'Deployment restrictions', pts:0, note:'⚠ ROLLBACK: RSP v3.0 removes the hard training-pause commitment that existed in v2.0. The specific obligation to pause if ASL-4 reached without mitigations is replaced with a broader process. Scored as rollback.', src:{title:'RSP v3.0 — change analysis', url:'https://anthropic.com/responsible-scaling-policy/rsp-v3-0'}},
+      ]},
+    }
+  },
+
+  // ── GOOGLE CII ─────────────────────────────────────────
+  { lab:'google', labName:'Google DeepMind', color:'#4285f4', metric:'cii',
+    notes: [
+      'CII drops to 3/4 in Q2 2025 — Gemini 2.5 Pro launched March 2025 with no system card, breaching the transparency commitments in the Frontier AI Safety Commitments (Bletchley Park, 2023). Restored to 4/4 in Q3 2025 after card published Aug 2025.',
+      'Google\'s Frontier Safety Framework (FSF) is the RSP equivalent. v1 (May 2024), v2 (Sep 2024), v3 (Mar 2026). Unlike Anthropic\'s RSP rollback, FSF v3 maintains and strengthens evaluation thresholds.',
+      'External oversight: Google participates in UK AI Safety Institute evaluations and DSIT testing programmes.',
+    ],
+    sources: [
+      { title:'Google Frontier Safety Framework v3 (Mar 2026)', url:'https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/strengthening-our-frontier-safety-framework/frontier-safety-framework_3.pdf' },
+      { title:'Google Frontier Safety Framework v1 (May 2024)', url:'https://deepmind.google/discover/blog/deepminds-approach-to-ai-safety/' },
+      { title:'Frontier AI Safety Commitments (Bletchley)',     url:'https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024' },
+      { title:'UK MPs letter re: Gemini 2.5 Pro',              url:'https://fortune.com/2025/08/29/british-lawmakers-accuse-google-deepmind-of-breach-of-trust-over-delayed-gemini-2-5-pro-safety-report/' },
+    ],
+    quarters: {
+      'Q2 2024': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'Frontier Safety Framework v1 published May 2024; evaluation regime documented.', src:{title:'FSF v1', url:'https://deepmind.google/discover/blog/deepminds-approach-to-ai-safety/'}},
+        {name:'Transparency commits', pts:1, note:'System cards current; Bletchley commitments signed.',                          src:{title:'Frontier AI Safety Commitments', url:'https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024'}},
+        {name:'External oversight',   pts:1, note:'Participates in UK AISI evaluations and DSIT testing.',                        src:null},
+        {name:'Deployment restrictions', pts:1, note:'FSF specifies deployment restrictions at Critical capability level.',       src:null},
+      ]},
+      'Q3 2024': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'FSF maintained; evaluation regime active.',                                     src:null},
+        {name:'Transparency commits', pts:1, note:'System cards published on schedule.',                                          src:null},
+        {name:'External oversight',   pts:1, note:'UK AISI evaluation participation continued.',                                  src:null},
+        {name:'Deployment restrictions', pts:1, note:'FSF deployment restrictions maintained.',                                   src:null},
+      ]},
+      'Q4 2024': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'FSF evaluation regime active.',                                                 src:null},
+        {name:'Transparency commits', pts:1, note:'Cards published on schedule.',                                                 src:null},
+        {name:'External oversight',   pts:1, note:'External testing active.',                                                     src:null},
+        {name:'Deployment restrictions', pts:1, note:'FSF restrictions maintained.',                                              src:null},
+      ]},
+      'Q1 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'FSF maintained; Gemini 2.5 Pro evaluated internally.',                         src:null},
+        {name:'Transparency commits', pts:1, note:'Cards current at start of quarter; Gemini 2.5 Pro card absent at launch (Mar 2025) but scored Q2.', src:null},
+        {name:'External oversight',   pts:1, note:'AISI evaluation ongoing.',                                                     src:null},
+        {name:'Deployment restrictions', pts:1, note:'FSF restrictions maintained.',                                              src:null},
+      ]},
+      'Q2 2025': { score:3, components:[
+        {name:'Safety evals',        pts:1, note:'FSF evaluation regime maintained.',                                             src:null},
+        {name:'Transparency commits', pts:0, note:'⚠ BREACH: Gemini 2.5 Pro launched March 2025 with no system card. 60 UK MPs wrote formal letter citing violation of Bletchley transparency commitments.', src:{title:'UK MPs letter re: Gemini 2.5 Pro', url:'https://fortune.com/2025/08/29/british-lawmakers-accuse-google-deepmind-of-breach-of-trust-over-delayed-gemini-2-5-pro-safety-report/'}},
+        {name:'External oversight',   pts:1, note:'UK AISI evaluation continued.',                                               src:null},
+        {name:'Deployment restrictions', pts:1, note:'FSF deployment restrictions maintained.',                                   src:null},
+      ]},
+      'Q3 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'FSF maintained.',                                                              src:null},
+        {name:'Transparency commits', pts:1, note:'Gemini 2.5 Deep Think model card published August 2025; commitment restored.', src:{title:'Gemini 2.5 Deep Think Model Card', url:'https://storage.googleapis.com/deepmind-media/Model-Cards/Gemini-2-5-Deep-Think-Model-Card.pdf'}},
+        {name:'External oversight',   pts:1, note:'AISI evaluation active.',                                                     src:null},
+        {name:'Deployment restrictions', pts:1, note:'FSF restrictions maintained.',                                              src:null},
+      ]},
+      'Q4 2025': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'FSF active; v3 in preparation.',                                               src:null},
+        {name:'Transparency commits', pts:1, note:'Cards published on schedule.',                                                 src:null},
+        {name:'External oversight',   pts:1, note:'External evaluation continued.',                                              src:null},
+        {name:'Deployment restrictions', pts:1, note:'FSF restrictions maintained.',                                              src:null},
+      ]},
+      'Q1 2026': { score:4, components:[
+        {name:'Safety evals',        pts:1, note:'FSF v3 (Mar 2026) strengthens evaluation — new capability thresholds added, none removed.', src:{title:'FSF v3 (Mar 2026)', url:'https://storage.googleapis.com/deepmind-media/DeepMind.com/Blog/strengthening-our-frontier-safety-framework/frontier-safety-framework_3.pdf'}},
+        {name:'Transparency commits', pts:1, note:'System cards maintained.',                                                    src:null},
+        {name:'External oversight',   pts:1, note:'UK AISI and DSIT evaluations active.',                                        src:null},
+        {name:'Deployment restrictions', pts:1, note:'FSF v3 deployment restrictions maintained and strengthened; no rollback.', src:null},
+      ]},
+    }
+  },
+
+  // ── META CII ───────────────────────────────────────────
+  { lab:'meta', labName:'Meta AI', color:'#7c3aed', metric:'cii',
+    notes: [
+      'Meta has the lowest CII scores in the dataset. No formal RSP equivalent has been published, meaning external oversight scores 0 throughout.',
+      'Military-use prohibition: Meta\'s original Llama AUP (2023) explicitly prohibited military applications. This commitment was reversed in November 2024 — US government and military contractors were re-permitted. Scored as a deployment-restrictions rollback from Q4 2024 onward.',
+      'Meta did not publish a formal Responsible Scaling Policy by the February 2025 Bletchley Frontier AI Safety Commitments deadline. This distinguishes Meta from the other three labs, all of which have published RSP equivalents.',
+      'Safety evaluations (1pt) awarded because Meta does publish safety evaluation results in model cards and the Llama Safety review process, even without a formal RSP framework.',
+    ],
+    sources: [
+      { title:'Llama 4 Acceptable Use Policy',         url:'https://www.llama.com/llama4/use-policy/' },
+      { title:'Frontier AI Safety Commitments (Feb 2025 deadline)', url:'https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024' },
+      { title:'Stanford CRFM AUP Analysis (Meta military use)', url:'https://crfm.stanford.edu/2024/04/08/aups.html' },
+      { title:'Meta Llama Safety Information',         url:'https://ai.meta.com/safety/' },
+    ],
+    quarters: {
+      'Q2 2024': { score:3, components:[
+        {name:'Safety evals',        pts:1, note:'Llama safety evaluations and red-teaming documented in model cards.',           src:{title:'Meta Llama Safety', url:'https://ai.meta.com/safety/'}},
+        {name:'Transparency commits', pts:1, note:'Model cards published on HuggingFace for Llama 2 and 3 families.',            src:{title:'Llama 3.1 Model Card', url:'https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct'}},
+        {name:'External oversight',   pts:0, note:'No formal RSP equivalent; no participation in government safety testing programmes documented.', src:null},
+        {name:'Deployment restrictions', pts:1, note:'Military use explicitly prohibited in original Llama AUP.',               src:{title:'Llama 2 AUP', url:'https://ai.meta.com/llama/use-policy/'}},
+      ]},
+      'Q3 2024': { score:3, components:[
+        {name:'Safety evals',        pts:1, note:'Safety evaluations documented in Llama 3.1/3.2 model cards.',                 src:{title:'Llama 3.2 Model Card', url:'https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct'}},
+        {name:'Transparency commits', pts:1, note:'Model cards published.',                                                      src:null},
+        {name:'External oversight',   pts:0, note:'No formal RSP or government testing participation.',                          src:null},
+        {name:'Deployment restrictions', pts:1, note:'Military use prohibition still in force in Q3 2024.',                     src:null},
+      ]},
+      'Q4 2024': { score:2, components:[
+        {name:'Safety evals',        pts:1, note:'Safety evaluations maintained in model cards.',                                src:null},
+        {name:'Transparency commits', pts:1, note:'Model cards published.',                                                      src:null},
+        {name:'External oversight',   pts:0, note:'No formal RSP or government testing participation.',                          src:null},
+        {name:'Deployment restrictions', pts:0, note:'⚠ ROLLBACK: Military-use prohibition reversed November 2024 — US government agencies and military contractors explicitly permitted under revised AUP. Original prohibition removed.', src:{title:'Stanford CRFM AUP analysis', url:'https://crfm.stanford.edu/2024/04/08/aups.html'}},
+      ]},
+      'Q1 2025': { score:2, components:[
+        {name:'Safety evals',        pts:1, note:'Llama evaluations documented.',                                               src:null},
+        {name:'Transparency commits', pts:1, note:'Model cards current.',                                                        src:null},
+        {name:'External oversight',   pts:0, note:'No RSP equivalent published by Feb 2025 Bletchley deadline.',                src:{title:'Frontier AI Safety Commitments deadline', url:'https://www.gov.uk/government/publications/frontier-ai-safety-commitments-ai-seoul-summit-2024'}},
+        {name:'Deployment restrictions', pts:0, note:'Military-use reversal stands; no new deployment restrictions announced.', src:null},
+      ]},
+      'Q2 2025': { score:2, components:[
+        {name:'Safety evals',        pts:1, note:'Llama 4 safety evaluations documented (Apr 2025).',                           src:{title:'Llama 4 AUP', url:'https://www.llama.com/llama4/use-policy/'}},
+        {name:'Transparency commits', pts:1, note:'Llama 4 model card published.',                                              src:null},
+        {name:'External oversight',   pts:0, note:'No formal RSP equivalent.',                                                  src:null},
+        {name:'Deployment restrictions', pts:0, note:'Military-use reversal maintained; no new restrictions.',                  src:null},
+      ]},
+      'Q3 2025': { score:2, components:[
+        {name:'Safety evals',        pts:1, note:'Safety evaluations maintained.',                                              src:null},
+        {name:'Transparency commits', pts:1, note:'Model cards published.',                                                     src:null},
+        {name:'External oversight',   pts:0, note:'No formal RSP equivalent.',                                                  src:null},
+        {name:'Deployment restrictions', pts:0, note:'Military-use reversal maintained.',                                       src:null},
+      ]},
+      'Q4 2025': { score:2, components:[
+        {name:'Safety evals',        pts:1, note:'Llama 3.3 evaluations documented.',                                           src:{title:'Llama 3.3 Model Card', url:'https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct'}},
+        {name:'Transparency commits', pts:1, note:'Model cards current.',                                                        src:null},
+        {name:'External oversight',   pts:0, note:'No RSP equivalent.',                                                         src:null},
+        {name:'Deployment restrictions', pts:0, note:'Military-use reversal maintained.',                                       src:null},
+      ]},
+      'Q1 2026': { score:2, components:[
+        {name:'Safety evals',        pts:1, note:'Safety evaluation process maintained in model cards.',                        src:{title:'Meta Llama Safety', url:'https://ai.meta.com/safety/'}},
+        {name:'Transparency commits', pts:1, note:'Model cards published.',                                                     src:null},
+        {name:'External oversight',   pts:0, note:'No formal RSP equivalent. Meta remains the only lab of the four without a published RSP-equivalent document.', src:null},
+        {name:'Deployment restrictions', pts:0, note:'No deployment restrictions reinstated. Military-use reversal (Nov 2024) remains in force.', src:null},
+      ]},
+    }
+  },
 ];
 
 // ── Filter state ──────────────────────────────────────
@@ -959,7 +1285,7 @@ function renderSources() {
 
     let labHtml = '';
     entries.forEach(entry => {
-      const metricLabel = {pucc:'PUCC — Prohibited Use Category Count', tai:'TAI — Transparency Artifact Index', es:'ES — Enforcement Signal'}[entry.metric];
+      const metricLabel = {pucc:'PUCC — Prohibited Use Category Count', tai:'TAI — Transparency Artifact Index', es:'ES — Enforcement Signal', cii:'CII — Commitment Integrity Index'}[entry.metric];
       let entryText = (entry.notes||[]).join(' ') + (entry.sources||[]).map(s=>s.title).join(' ');
       if (entry.quarters) Object.values(entry.quarters).forEach(qd => qd.components.forEach(c => entryText += ' ' + c.note + ' ' + (c.src?.title||'')));
       if (q && !entryText.toLowerCase().includes(q) && !metricLabel.toLowerCase().includes(q) && !labNames[lab].toLowerCase().includes(q)) return;
